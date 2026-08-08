@@ -140,6 +140,7 @@ hr { border:none; border-top:1px solid var(--rule); margin:32px 0; }
   <h2>目录</h2>
   <ol>
     <li><a href="#s1">技术架构总览</a></li>
+    <li><a href="#s1b">Non-Goals、用户画像与设计原则</a></li>
     <li><a href="#s2">目录结构与模块拆分</a></li>
     <li><a href="#s3">Sprint 规划总览</a></li>
     <li><a href="#s4">Sprint 1：光球核心与状态机</a></li>
@@ -189,6 +190,75 @@ hr { border:none; border-top:1px solid var(--rule); margin:32px 0; }
 <p style="margin:0"><strong>P0（MVP）</strong>：纯 CSS 动画 + 内联 SVG + 文字输入 + 预设意图响应。打开 HTML 即可运行，不依赖任何外部库。</p>
 <p style="margin:0.5rem 0 0"><strong>P1（增强）</strong>：引入 ECharts/Mermaid/字体文件作为渐进增强（本地引用 <code>./_shared/</code>）。Web Speech API + Web Audio API 增加语音输入和声波可视化。缺失时降级为系统字体/文字输入。</p>
 <p style="margin:0.5rem 0 0"><strong>P2（未来）</strong>：接入 Vercel AI SDK + LLM Function Calling，实现真实 AI 对话和动态 UI 生成。</p>
+</div>
+</section>
+
+<!-- ===== 1.5 Non-Goals / 用户画像 / 设计原则 ===== -->
+<section id="s1b">
+<h2><span class="num">1.5</span> Non-Goals、用户画像与设计原则</h2>
+
+<h3>Non-Goals（明确排除项）</h3>
+<div class="callout callout-warn">
+<span class="label">Vibe Coding 必须遵守的边界</span>
+<p style="margin:0">本 Demo <strong>不包含</strong>：真实操作系统级集成、真实 LLM 后端推理（使用模拟响应）、持久化存储、多用户系统、生产环境部署、真实语音识别（使用模拟数据）。所有 AI 响应均为预设脚本模拟，旨在验证交互范式而非 AI 准确度。</p>
+<p style="margin-top:8px">这一明确排除是 Vibe Coding 的最佳实践要求——防止 AI 在编码时"好心"添加未要求的功能。</p>
+</div>
+
+<h3>用户画像（3 类）</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>画像</th><th>描述</th><th>痛点</th><th>开发关注</th></tr></thead>
+<tbody>
+<tr><td><strong>评审者</strong></td><td>在 5-10 分钟内评估设计方案的产品思维与 AI 原生设计</td><td>看过太多"AI 聊天框"方案，期待看到真正跳出 App 范式的交互设计</td><td>5 分钟演示脚本必须覆盖 Q1/Q2/Q3 全流程</td></tr>
+<tr><td><strong>Vibe Coder / 开发者</strong></td><td>根据 PRD 用 Cursor/Claude Code 快速复现 Demo</td><td>需要明确的交互规格、状态定义和组件拆分，而非模糊的"做一个 AI 界面"</td><td>精确参数（HSL/缩放/周期/缓动）+ 模块拆分表 + Vibe Coding 提示词</td></tr>
+<tr><td><strong>终端体验者</strong></td><td>第一次接触"无 App"概念的用户</td><td>习惯性找"打开应用"的入口，需要引导而非说明文档</td><td>光球本身就是入口，无 App 图标、无搜索框、无底部导航</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>核心使用场景（4 个，按优先级排序）</h3>
+<div class="card">
+<p><strong>场景 1：唤醒与存在感知</strong> — 用户打开 Demo，屏幕中央出现缓慢呼吸的能量光球，边缘有微弱光晕。没有 App 图标、没有搜索框、没有底部导航栏。光球本身传达"我在这里，随时待命"。</p>
+<p><strong>场景 2：表达意图</strong> — 用户点击光球或按空格键，光球颜色从青色变为高亮态，周围出现声波动画，底部显示"正在聆听..."。用户语音或文字输入"帮我查下明天北京的天气"。</p>
+<p><strong>场景 3：理解确认</strong> — 输入完成后，光球短暂闪烁紫色（思考态），1 秒后变为暖色（回应态），同时从光球中"生长"出一张天气卡片，悬浮在光球右侧，显示明天的天气信息。</p>
+<p><strong>场景 4：多任务共存</strong> — 用户继续输入第二个意图"放一首适合下雨天听的歌"，光球再次进入聆听态，处理后第二张卡片从光球左侧浮现。两张卡片共存于空间中，可拖拽调整位置，无 App 切换。</p>
+</div>
+
+<h3>5 条设计原则（开发判断锚点）</h3>
+<div class="card card-accent">
+<ol>
+<li><strong>克制优先</strong>：任何视觉元素必须有一个"被删除"的理由。默认状态是"无"，仅在必要时出现。</li>
+<li><strong>意图驱动</strong>：用户不需要知道"怎么做"，只需表达"要什么"。系统负责"如何做"。</li>
+<li><strong>环境式计算</strong>：AI 像空气一样存在——感知你的需求，但不占据你的注意力。</li>
+<li><strong>动效语义化</strong>：每一个微动效都承载信息——"我在听""我在想""我懂了""我完成了"。</li>
+<li><strong>渐进呈现</strong>：信息不是一次性抛出的列表，而是根据上下文和时机逐步浮现。</li>
+</ol>
+</div>
+
+<h3>Aura OS 精确视觉参数（Vibe Coding 直接可用）</h3>
+<p>以下参数来自 PRD §7"Aura OS 精确参数"，为 Vibe Coding 提供可直接使用的数值。Sprint 1 实现光球时必须参照此表。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>参数</th><th>值</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><strong>核心层颜色（Idle）</strong></td><td>HSL(180, 80%, 55%)</td><td>青绿色，传达"待命"</td></tr>
+<tr><td><strong>核心层颜色（Listening）</strong></td><td>HSL(200, 90%, 60%)</td><td>偏蓝青，传达"接收中"</td></tr>
+<tr><td><strong>核心层颜色（Understanding）</strong></td><td>HSL(270, 70%, 60%)</td><td>紫色，传达"理解中"</td></tr>
+<tr><td><strong>核心层颜色（Thinking）</strong></td><td>HSL(260, 60%, 50%)</td><td>深紫，传达"深度处理"</td></tr>
+<tr><td><strong>核心层颜色（Responding）</strong></td><td>HSL(45, 90%, 60%)</td><td>暖金色，传达"输出"</td></tr>
+<tr><td><strong>呼吸缩放幅度</strong></td><td>scale(1.0) → scale(1.08)</td><td>8%缩放，Calm Technology 最小注意力原则</td></tr>
+<tr><td><strong>呼吸周期</strong></td><td>5s ease-in-out</td><td>4-6 秒区间，研究表明更符合"平静"感</td></tr>
+<tr><td><strong>Understanding 收缩</strong></td><td>scale(0.92)，400ms</td><td>光从外缘向内收缩，半径减少 8%</td></tr>
+<tr><td><strong>Responding 绽放</strong></td><td>scale(1.15)，300ms</td><td>光向外扩散，半径增加 15%</td></tr>
+<tr><td><strong>粒子系统</strong></td><td>8-12 粒子，HSL 跟随核心色</td><td>Understanding 态粒子绕核心旋转，半径 40-60px，速度 2rad/s</td></tr>
+<tr><td><strong>涟漪效果</strong></td><td>3 层同心圆，800ms 扩散</td><td>Responding 态从核心向外扩散，opacity 0.6→0</td></tr>
+<tr><td><strong>四层光叠加</strong></td><td>核心层 + 内光层 + 主光环 + 外辉层</td><td>Canvas 2D：核心层实心圆(rad 20px) → 内光层径向渐变(rad 40px) → 主光环环形(rad 60px) → 外辉层弥散(rad 100px, opacity 0.15)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout">
+<span class="label">参数使用说明</span>
+<p style="margin:0">P0 阶段用 CSS 实现核心层 + 内光层（<code>radial-gradient</code> + <code>box-shadow</code>），P1 阶段用 Canvas 2D 实现完整四层光叠加 + 粒子 + 涟漪。HSL 值可直接用于 CSS <code>hsl()</code> 函数。</p>
 </div>
 </section>
 
@@ -472,7 +542,7 @@ type StateTransition =
     <li>Idle→Listening：光球外缘扩张（缩放增大）</li>
     <li>Listening→Understanding：光球从外缘向内收缩（缩放减小 1.12→0.95）</li>
     <li>Understanding→Thinking：颜色从青渐变到紫（0.4s 过渡）</li>
-    <li>Thinking→Responding：光球向外绽放（缩放增大 + 暖橙色）</li>
+    <li>Thinking→Responding：光球向外绽放（scale(1.15), 300ms）+ 3 层涟漪同心圆扩散（800ms, opacity 0.6→0）</li>
   </ul>
 </li>
 <li><strong>缓动函数</strong>：进入用 <code>cubic-bezier(0.16, 1, 0.3, 1)</code>（ease-out-expo），退出用 <code>cubic-bezier(0.7, 0, 0.84, 0)</code>（ease-in-expo）</li>
@@ -741,8 +811,8 @@ function calculateCardPosition(index: number, total: number) {
 <div class="card">
 <h4>实现方案</h4>
 <ul>
-<li><strong>Canvas 2D 渲染</strong>：在光球内部叠加 Canvas 层，绘制 20-30 个旋转粒子</li>
-<li><strong>粒子参数</strong>：半径 1-3px，透明度 0.3-0.8，围绕光球中心做椭圆运动</li>
+<li><strong>Canvas 2D 渲染</strong>：在光球内部叠加 Canvas 层，绘制 8-12 个旋转粒子（PRD §7 精确参数）</li>
+<li><strong>粒子参数</strong>：HSL 色值跟随核心色，半径 40-60px 围绕光球中心旋转，速度 2rad/s，透明度 0.3-0.8</li>
 <li><strong>触发条件</strong>：仅 Understanding 态和 Thinking 态显示</li>
 <li><strong>性能优化</strong>：<code>requestAnimationFrame</code> + delta-time，非活动状态时停止渲染</li>
 <li><strong>降级策略</strong>：如果不支持 Canvas，回退为 CSS 旋转光效</li>

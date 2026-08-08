@@ -92,3 +92,7 @@ Idle → Listening → Understanding → Thinking → Responding → Idle
 | 日期 | 简述 | 影响范围 | 关联 commit |
 |------|------|----------|-------------|
 | 2026-08-08 | F1: 项目初始化 + 能量光球渲染（Idle 态） | 全新项目骨架 + Orb 组件 | TBD |
+
+| 2026-08-08 | F2: 五态状态机 — Zustand store + 5 态视觉编码 + 自动超时 | Orb.tsx/CSS, useOrbStore.ts | TBD |
+| 2026-08-08 | F4: 状态切换控制 — 按钮组 + 光球点击 + 键盘快捷键 | StateControls.tsx/CSS, App.tsx | TBD |
+| 2026-08-08 | F9: 文字输入意图 — 输入框 + 回车触发状态流转 + 快捷按钮 | IntentInput.tsx/CSS, App.tsx | TBD |

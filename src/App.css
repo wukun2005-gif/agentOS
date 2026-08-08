@@ -1,10 +1,13 @@
 :root {
   --bg: #0a0e1a;
+  --bg2: #131826;
+  --bg3: #1a2033;
   --accent: #00e5cc;
   --accent2: #7c5cff;
   --accent3: #ffb84d;
   --ink: #e8edf5;
   --muted: #8b95a8;
+  --rule: #1e2535;
 }
 
 * {
@@ -13,9 +16,7 @@
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
+html, body, #root {
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -38,9 +39,7 @@ body {
 
 /* Accessibility — reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

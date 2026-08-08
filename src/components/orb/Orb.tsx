@@ -1,22 +1,48 @@
+import { useEffect } from 'react'
+import { useOrbStore } from '../../store/useOrbStore'
+import { ORB_STATE_LABELS, type OrbState } from './OrbState'
 import './Orb.css'
 
 /**
- * F1: 能量光球渲染组件
+ * F1+F2: 能量光球组件
  *
- * P0 阶段仅实现 Idle 态视觉：
- * - CSS radial-gradient + box-shadow 多层光叠加
- * - 5s 呼吸周期（scale 1.0 → 1.08）
- * - 双层光晕环（::before 4s / ::after 5s，素数周期避免同步）
+ * F1: CSS radial-gradient + box-shadow 多层光叠加 + 双层光晕环
+ * F2: Zustand store 驱动 5 态切换 + 自动超时回 Idle
  *
- * 光球居中定位（top 45%），直径 160px。
- * F2 将添加状态机切换其他 4 态视觉。
+ * 自动超时（仅手动切换时生效，意图流程 F9 时禁用）：
+ * - Listening 8s 超时
+ * - Thinking 10s 超时
+ * - Responding 3s 后回 Idle
  */
+const AUTO_TIMEOUTS: Partial<Record<OrbState, number>> = {
+  listening: 8000,
+  thinking: 10000,
+  responding: 3000,
+}
+
 export function Orb() {
+  const orbState = useOrbStore((s) => s.orbState)
+  const setOrbState = useOrbStore((s) => s.setOrbState)
+  const intentFlowActive = useOrbStore((s) => s.intentFlowActive)
+
+  useEffect(() => {
+    if (intentFlowActive) return
+
+    const timeout = AUTO_TIMEOUTS[orbState]
+    if (!timeout) return
+
+    const timer = setTimeout(() => {
+      setOrbState('idle')
+    }, timeout)
+
+    return () => clearTimeout(timer)
+  }, [orbState, setOrbState, intentFlowActive])
+
   return (
     <div
-      className="orb idle"
+      className={`orb ${orbState}`}
       role="img"
-      aria-label="AI 能量光球 — 待命中"
+      aria-label={`AI 能量光球 — ${ORB_STATE_LABELS[orbState]}`}
     />
   )
 }

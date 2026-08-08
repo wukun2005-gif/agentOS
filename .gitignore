@@ -6,3 +6,6 @@ dist/
 .env.local
 .vite/
 *.tsbuildinfo
+doc/3995-1.html
+doc/3995-2.html
+doc/3995-3.html

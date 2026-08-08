@@ -1,4 +1,4 @@
-/* ===== F1: 能量光球渲染 ===== */
+/* ===== F1+F2: 能量光球 — 5 态动画 ===== */
 
 .orb {
   position: absolute;
@@ -8,11 +8,11 @@
   height: 160px;
   border-radius: 50%;
   cursor: pointer;
-  /* transform 由各状态的 animation 控制 */
-  will-change: transform;
+  will-change: transform, background, box-shadow;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* ---- Idle 态：5s 呼吸，青绿色 ---- */
+/* ---- Idle 态：5s 呼吸，青绿色 #00e5cc @60% ---- */
 .orb.idle {
   background: radial-gradient(
     circle at 35% 35%,
@@ -28,13 +28,89 @@
 }
 
 @keyframes orb-idle {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.08);
-  }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.08); }
+}
+
+/* ---- Listening 态：0.8s 快速脉动，青色 #00e5cc @100% ---- */
+.orb.listening {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(0, 229, 204, 1),
+    rgba(0, 229, 204, 0.4) 50%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 60px rgba(0, 229, 204, 0.6),
+    0 0 120px rgba(0, 229, 204, 0.3),
+    inset 0 0 40px rgba(0, 229, 204, 0.5);
+  animation: orb-listening 0.8s ease-in-out infinite;
+}
+
+@keyframes orb-listening {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.12); }
+}
+
+/* ---- Understanding 态：0.4s 向内收缩，青→紫渐变 ---- */
+.orb.understanding {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(124, 92, 255, 0.8),
+    rgba(0, 229, 204, 0.3) 50%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 50px rgba(124, 92, 255, 0.5),
+    0 0 100px rgba(124, 92, 255, 0.2),
+    inset 0 0 35px rgba(124, 92, 255, 0.4);
+  animation: orb-understanding 0.4s ease-in forwards;
+}
+
+@keyframes orb-understanding {
+  0% { transform: translate(-50%, -50%) scale(1.12); }
+  100% { transform: translate(-50%, -50%) scale(0.95); }
+}
+
+/* ---- Thinking 态：2s 旋转脉动，紫色 #7c5cff @90% ---- */
+.orb.thinking {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(124, 92, 255, 0.9),
+    rgba(124, 92, 255, 0.3) 50%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 55px rgba(124, 92, 255, 0.5),
+    0 0 110px rgba(124, 92, 255, 0.25),
+    inset 0 0 40px rgba(124, 92, 255, 0.5);
+  animation: orb-thinking 2s ease-in-out infinite;
+}
+
+@keyframes orb-thinking {
+  0% { transform: translate(-50%, -50%) scale(0.95) rotate(0deg); }
+  50% { transform: translate(-50%, -50%) scale(1.05) rotate(180deg); }
+  100% { transform: translate(-50%, -50%) scale(0.95) rotate(360deg); }
+}
+
+/* ---- Responding 态：1.5s 左右轻摆，暖橙 #ffb84d @90% ---- */
+.orb.responding {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 184, 77, 0.9),
+    rgba(255, 184, 77, 0.3) 50%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 55px rgba(255, 184, 77, 0.5),
+    0 0 110px rgba(255, 184, 77, 0.25),
+    inset 0 0 40px rgba(255, 184, 77, 0.4);
+  animation: orb-responding 1.5s ease-in-out infinite;
+}
+
+@keyframes orb-responding {
+  0%, 100% { transform: translate(-50%, -50%) translateX(-3px); }
+  50% { transform: translate(-50%, -50%) translateX(3px); }
 }
 
 /* ---- 光晕环 1：4s 周期 ---- */
@@ -52,18 +128,11 @@
 }
 
 @keyframes halo-1 {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.15);
-    opacity: 0.1;
-  }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.1; }
 }
 
-/* ---- 光晕环 2：5s 周期（与 halo-1 素数关系，避免同步） ---- */
+/* ---- 光晕环 2：5s 周期（素数关系避免同步） ---- */
 .orb::after {
   content: '';
   position: absolute;
@@ -78,15 +147,8 @@
 }
 
 @keyframes halo-2 {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.2;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.2);
-    opacity: 0.05;
-  }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.05; }
 }
 
 /* ---- Accessibility — reduced motion ---- */

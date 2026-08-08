@@ -1,0 +1,76 @@
+/* ===== F4: 状态切换控制样式 ===== */
+
+/* 光球点击层 — 覆盖光球区域，透明 */
+.orb-click-layer {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* 状态标签 — 光球下方 */
+.state-label {
+  position: absolute;
+  top: calc(45% + 100px);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.state-label-name {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.state-label-desc {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* 按钮组 — 底部居中 */
+.state-controls {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 20;
+}
+
+.state-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--rule, #1e2535);
+  border-radius: 8px;
+  background: rgba(19, 24, 38, 0.7);
+  backdrop-filter: blur(10px);
+  color: var(--muted, #8b95a8);
+  font-size: 13px;
+  font-family: -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.state-btn:hover {
+  border-color: var(--accent, #00e5cc);
+  color: var(--ink, #e8edf5);
+}
+
+.state-btn.active {
+  background: rgba(0, 229, 204, 0.15);
+  border-color: var(--accent, #00e5cc);
+  color: var(--accent, #00e5cc);
+  box-shadow: 0 0 12px rgba(0, 229, 204, 0.2);
+}

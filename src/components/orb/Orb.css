@@ -1,0 +1,99 @@
+/* ===== F1: 能量光球渲染 ===== */
+
+.orb {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  cursor: pointer;
+  /* transform 由各状态的 animation 控制 */
+  will-change: transform;
+}
+
+/* ---- Idle 态：5s 呼吸，青绿色 ---- */
+.orb.idle {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(0, 229, 204, 0.8),
+    rgba(0, 229, 204, 0.2) 50%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 40px rgba(0, 229, 204, 0.4),
+    0 0 80px rgba(0, 229, 204, 0.2),
+    inset 0 0 30px rgba(0, 229, 204, 0.3);
+  animation: orb-idle 5s ease-in-out infinite;
+}
+
+@keyframes orb-idle {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+/* ---- 光晕环 1：4s 周期 ---- */
+.orb::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 229, 204, 0.2);
+  animation: halo-1 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes halo-1 {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.1;
+  }
+}
+
+/* ---- 光晕环 2：5s 周期（与 halo-1 素数关系，避免同步） ---- */
+.orb::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 229, 204, 0.1);
+  animation: halo-2 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes halo-2 {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.05;
+  }
+}
+
+/* ---- Accessibility — reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .orb,
+  .orb::before,
+  .orb::after {
+    animation: none !important;
+  }
+}

@@ -1,6 +1,6 @@
 # Aura OS — AI 存在范式 Demo
 
-基于三份 AI 生成的 MVP PRD（Aura OS / Intent OS / Energy Orb），结合三份评估报告的对比分析，取长补短合并为一份完整 PRD，并逐步开发为可运行的交互式 Demo。
+一个"无 App 时代"的 AI 交互范式演示。核心交互实体是一个能量光球（Energy Orb），通过 5 态状态机（Idle → Listening → Understanding → Thinking → Responding）表达 AI 的存在感和理解过程。
 
 ## 快速开始
 
@@ -11,37 +11,25 @@ npm run dev
 
 浏览器打开 http://localhost:5173/
 
-## 技术栈
+## 功能
 
-- **框架**: React 18 + TypeScript + Vite
-- **样式**: 手写 CSS 动画（光球呼吸、状态切换）
-- **状态**: Zustand（Sprint 2 引入）
-- **静态检查**: ESLint + TypeScript 严格模式
-- **部署**: Vercel / GitHub Pages
+- **能量光球**：CSS 动画驱动的光球，5 种状态各有独立视觉表现（颜色、缩放、旋转、周期）
+- **状态切换**：5 按钮组 + 光球点击 + 键盘快捷键（空格/ESC）
+- **意图输入**：文字输入框 + 回车触发完整状态流转 + 3 个快捷按钮
+- **无障碍**：支持 `prefers-reduced-motion`
 
 ## 项目结构
 
 ```
-├── doc/                    # PRD 文档与开发计划
-│   ├── merged-prd.html     # 合并后的 PRD 主文件
-│   ├── dev-plan.html        # 开发实现计划
-│   ├── assets/              # 竞品雷达图配置
-│   ├── _shared/             # 字体 + JS 库
-│   └── 3995-{1,2,3}.html   # 原始 PRD
-├── src/                    # Demo 源代码
-│   ├── components/orb/      # F1: 能量光球
-│   ├── App.tsx             # 根组件
-│   ├── App.css             # 全局样式
-│   └── main.tsx             # 入口
-├── DESIGN.md              # 架构设计文档
+├── src/
+│   ├── components/orb/        # 能量光球组件 + 5 态动画
+│   ├── components/controls/   # 状态切换控制 + 意图输入
+│   ├── store/                 # Zustand 状态管理
+│   ├── App.tsx
+│   └── main.tsx
+├── doc/                       # PRD 与开发计划文档
 └── package.json
 ```
-
-## 文档
-
-- **PRD**: [doc/merged-prd.html](doc/merged-prd.html)
-- **开发计划**: [doc/dev-plan.html](doc/dev-plan.html)
-- **架构设计**: [DESIGN.md](DESIGN.md)
 
 ## 开发命令
 

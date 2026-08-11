@@ -4,9 +4,9 @@ import { ORB_STATE_LABELS, type OrbState } from '../orb/OrbState'
 import './StateControls.css'
 
 /**
- * F4: 状态切换控制
+ * F4: 状态切换控制（PRD v0.2 — 8 态状态机）
  *
- * - 5 个按钮切换状态
+ * - 8 个按钮切换状态
  * - 光球点击：Idle→Listening，再次点击取消
  * - 键盘快捷键：空格切换 Listening/Idle，ESC 回 Idle
  * - 状态标签：光球下方显示当前状态名
@@ -15,12 +15,24 @@ import './StateControls.css'
 const STATE_DESCRIPTIONS: Record<OrbState, string> = {
   idle: '待命 — 青绿色缓慢呼吸',
   listening: '聆听中 — 快速脉动接收',
-  understanding: '理解中 — 向内收缩',
-  thinking: '思考中 — 旋转深度处理',
+  captured: '已收到 — 外环向内收拢',
+  understanding: '理解中 — 暖紫脉冲内聚',
+  executing: '执行中 — 内核轻微旋转',
   responding: '回应中 — 暖金色轻摆',
+  clarifying: '澄清中 — 温和紫色静止',
+  error: '错误 — 红色短脉冲 + 断环',
 }
 
-const ALL_STATES: OrbState[] = ['idle', 'listening', 'understanding', 'thinking', 'responding']
+const ALL_STATES: OrbState[] = [
+  'idle',
+  'listening',
+  'captured',
+  'understanding',
+  'executing',
+  'responding',
+  'clarifying',
+  'error',
+]
 
 export function StateControls() {
   const orbState = useOrbStore((s) => s.orbState)

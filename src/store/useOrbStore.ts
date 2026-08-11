@@ -8,6 +8,9 @@ interface OrbStore {
   setTranscript: (text: string) => void
   intentFlowActive: boolean
   setIntentFlowActive: (active: boolean) => void
+  /** 错误态的原因（error 态显示） */
+  errorMessage: string
+  setErrorMessage: (message: string) => void
 }
 
 export const useOrbStore = create<OrbStore>((set) => ({
@@ -17,4 +20,6 @@ export const useOrbStore = create<OrbStore>((set) => ({
   setTranscript: (transcript) => set({ transcript }),
   intentFlowActive: false,
   setIntentFlowActive: (intentFlowActive) => set({ intentFlowActive }),
+  errorMessage: '',
+  setErrorMessage: (errorMessage) => set({ errorMessage }),
 }))

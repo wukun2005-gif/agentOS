@@ -4,15 +4,15 @@ import type { OrbState } from '../orb/OrbState'
 import './IntentInput.css'
 
 /**
- * F9: 文字输入意图
+ * F9: 文字输入意图（PRD v0.2 — 8 态状态机）
  *
  * - 输入框：底部居中，深色背景 + 青色边框聚焦
- * - 回车提交：触发 Listening → Understanding → Thinking → Responding → Idle
+ * - 回车提交：触发 Listening → Captured → Understanding → Executing → Responding → Idle
  * - 3 个快捷按钮：天气 / 音乐 / 提醒
  * - 转写显示区：光球下方显示输入文字
  *
  * 状态流转时序：
- *   Listening(0.5s) → Understanding(0.4s) → Thinking(1.5s) → Responding(2s) → Idle
+ *   Listening(0.5s) → Captured(0.35s) → Understanding(0.6s) → Executing(1.5s) → Responding(2s) → Idle
  */
 
 const QUICK_PROMPTS = [
@@ -24,8 +24,9 @@ const QUICK_PROMPTS = [
 /** 意图流程时序：每个状态的持续时长（毫秒） */
 const FLOW_TIMING: Array<{ state: OrbState; duration: number }> = [
   { state: 'listening', duration: 500 },
-  { state: 'understanding', duration: 400 },
-  { state: 'thinking', duration: 1500 },
+  { state: 'captured', duration: 350 },
+  { state: 'understanding', duration: 600 },
+  { state: 'executing', duration: 1500 },
   { state: 'responding', duration: 2000 },
 ]
 
@@ -47,12 +48,13 @@ export function IntentInput() {
   /**
    * 执行意图流程
    *
-   * 时序：
+   * 时序（PRD v0.2 — 8 态）：
    *   0ms      → listening（持续 500ms）
-   *   500ms    → understanding（持续 400ms）
-   *   900ms    → thinking（持续 1500ms）
-   *   2400ms   → responding（持续 2000ms）
-   *   4400ms   → idle
+   *   500ms    → captured（持续 350ms）
+   *   850ms    → understanding（持续 600ms）
+   *   1450ms   → executing（持续 1500ms）
+   *   2950ms   → responding（持续 2000ms）
+   *   4950ms   → idle
    */
   const runIntentFlow = (text: string) => {
     clearAllTimers()

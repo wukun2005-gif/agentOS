@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI OS 范式 Demo — 开发实现计划 v0.1</title>
+<title>AI OS 范式 Demo — 开发实现计划 v0.2</title>
 <style>
 :root {
   --bg: #0a0e1a;
@@ -124,14 +124,15 @@ hr { border:none; border-top:1px solid var(--rule); margin:32px 0; }
 
 <!-- ===== HERO ===== -->
 <header class="hero">
-  <div class="tag">开发实现计划 · v0.1</div>
+  <div class="tag">开发实现计划 · v0.2</div>
   <h1>AI OS 范式 Demo — 开发实现计划</h1>
-  <p class="subtitle">基于 Merged PRD，将 27 项 Feature 拆解为 4 个 Sprint，覆盖技术架构、模块依赖、验收标准和 Vibe Coding 提示词</p>
+  <p class="subtitle">基于 Merged PRD v0.2，将 F1-F10 功能模块拆解为 4 个 Sprint，覆盖 8 态状态机、结构化数据契约、GenUI 边界、风险降级和 P0 验收清单</p>
   <div class="meta">
-    <span>基于 PRD: merged-prd.html</span>
+    <span>基于 PRD: merged-prd.html v0.2</span>
     <span>Sprint: 4 轮</span>
-    <span>P0 Feature: 9 项</span>
-    <span>P1 Feature: 9 项</span>
+    <span>状态机: 8 态</span>
+    <span>功能模块: F1-F10</span>
+    <span>Sprint 1: 已完成</span>
   </div>
 </header>
 
@@ -178,10 +179,11 @@ hr { border:none; border-top:1px solid var(--rule); margin:32px 0; }
 
 <h3>架构分层</h3>
 <div class="card card-accent">
-<p style="margin:0"><strong>表现层（Presentation）</strong>：React 组件树，包含 Orb、Waveform、CardLayer、SpatialLayout、Controls</p>
-<p style="margin:0"><strong>状态层（State）</strong>：Zustand store 管理 AI 状态机（Idle→Listening→Understanding→Thinking→Responding）+ 卡片列表 + 用户输入</p>
-<p style="margin:0"><strong>逻辑层（Logic）</strong>：IntentRouter（关键词匹配 → 预设响应）、CardFactory（intent → card type）、LayoutEngine（扇形/星轨位置计算）</p>
-<p style="margin:0"><strong>输入层（Input）</strong>：TextInput（P0 真实可用）→ SpeechRecognition（P1）→ AnalyserNode 波形（P1）</p>
+<p style="margin:0"><strong>表现层（Presentation）</strong>：React 组件树，包含 Orb、Waveform、ArtifactLayer、SpatialLayout、Controls、A11yAnnouncer</p>
+<p style="margin:0"><strong>状态层（State）</strong>：Zustand store 管理 <strong>8 态状态机</strong>（idle→listening→captured→understanding→executing→responding→clarifying→error）+ Artifact 列表 + 用户输入</p>
+<p style="margin:0"><strong>逻辑层（Logic）</strong>：IntentRouter（关键词匹配 → Intent 类型 + 风险分级）、ArtifactFactory（Intent → Artifact 模板）、Orchestrator（澄清/确认/Skill 调度）、SpatialLayout（focus/near/far 三层槽位）</p>
+<p style="margin:0"><strong>输入层（Input）</strong>：TextInput（P0 真实可用）→ SpeechRecognition（P1）→ AnalyserNode 波形（P1）；真实语音失败自动回退文字</p>
+<p style="margin:0"><strong>无障碍层（A11y）</strong>：A11yAnnouncer 独立组件，提供 <code>aria-live</code> 状态文本、键盘焦点管理、<code>prefers-reduced-motion</code> 降级，确保 Canvas 非唯一信息源</p>
 </div>
 
 <h3>渐进增强策略</h3>
@@ -204,7 +206,7 @@ hr { border:none; border-top:1px solid var(--rule); margin:32px 0; }
 <p style="margin-top:8px">这一明确排除是 Vibe Coding 的最佳实践要求——防止 AI 在编码时"好心"添加未要求的功能。</p>
 </div>
 
-<h3>用户画像（3 类）</h3>
+<h3>用户画像（3 类评审导向）</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>画像</th><th>描述</th><th>痛点</th><th>开发关注</th></tr></thead>
@@ -212,6 +214,19 @@ hr { border:none; border-top:1px solid var(--rule); margin:32px 0; }
 <tr><td><strong>评审者</strong></td><td>在 5-10 分钟内评估设计方案的产品思维与 AI 原生设计</td><td>看过太多"AI 聊天框"方案，期待看到真正跳出 App 范式的交互设计</td><td>5 分钟演示脚本必须覆盖 Q1/Q2/Q3 全流程</td></tr>
 <tr><td><strong>Vibe Coder / 开发者</strong></td><td>根据 PRD 用 Cursor/Claude Code 快速复现 Demo</td><td>需要明确的交互规格、状态定义和组件拆分，而非模糊的"做一个 AI 界面"</td><td>精确参数（HSL/缩放/周期/缓动）+ 模块拆分表 + Vibe Coding 提示词</td></tr>
 <tr><td><strong>终端体验者</strong></td><td>第一次接触"无 App"概念的用户</td><td>习惯性找"打开应用"的入口，需要引导而非说明文档</td><td>光球本身就是入口，无 App 图标、无搜索框、无底部导航</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>产品使用者画像（3 类，来自 PRD v0.2）</h3>
+<p>除评审导向画像外，Demo 还面向三类真实产品使用者。它们的 Job 与痛点直接驱动了 F1-F10 的取舍：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>用户</th><th>典型情境</th><th>核心任务（Job）</th><th>开发关注</th></tr></thead>
+<tbody>
+<tr><td><strong>情境切换者</strong></td><td>工作、出行、日常安排之间来回切换</td><td>"帮我把此刻需要的信息和下一步集中起来。"</td><td>F7 任务产物 + F8 三层空间化布局</td></tr>
+<tr><td><strong>低打扰使用者</strong></td><td>会议、通勤、夜间或不便操作屏幕时</td><td>"我想快速表达目标，也要随时能看见和修正理解。"</td><td>F9 文字输入一等入口 + F6 三步确认 + F10 减少动效</td></tr>
+<tr><td><strong>掌控型使用者</strong></td><td>涉及提醒、日程、消息或可能产生副作用的任务</td><td>"先让我确认你理解了什么，再决定是否执行。"</td><td>F6 风险分级 + external-action 必须确认</td></tr>
 </tbody>
 </table>
 </div>
@@ -309,35 +324,60 @@ hr { border:none; border-top:1px solid var(--rule); margin:32px 0; }
   <span class="file">main.tsx</span>                        <span class="comment"># 入口</span>
 </div>
 
-<h3>核心类型定义</h3>
+<h3>核心类型定义（PRD v0.2 结构化数据契约）</h3>
+<p>PRD v0.2 新增了 <strong>Intent</strong> 与 <strong>Artifact</strong> 的结构化边界。模型可以返回内容和选择，但<mark class="k">不能直接控制布局、权限、动画时长或执行外部动作</mark>：</p>
 <div class="code-block">
-<pre><span class="comment">// types/index.ts</span>
-<span class="comment">// AI 光球状态机</span>
-type OrbState = 'idle' | 'listening' | 'understanding' | 'thinking' | 'responding';
+<pre><span class="comment">// types/index.ts — PRD v0.2 §10 结构化数据契约</span>
 
-<span class="comment">// 意图类型</span>
-type IntentType = 'weather' | 'music' | 'timer' | 'search' | 'note';
+<span class="comment">// 8 态状态机（PRD v0.2 从 5 态扩展到 8 态）</span>
+type OrbState =
+  | 'idle' | 'listening' | 'captured'
+  | 'understanding' | 'executing' | 'responding'
+  | 'clarifying' | 'error';
 
-<span class="comment">// 卡片数据结构</span>
-interface Card {
+<span class="comment">// 意图类型 — IntentRouter 输出</span>
+type Intent = {
+  kind: 'weather' | 'music' | 'timer' | 'reminder' | 'note' | 'search' | 'route';
+  entities: Record&lt;string, string | number | boolean&gt;;
+  confidence: number;       <span class="comment">// 低于阈值进入 clarifying 态</span>
+  risk: 'informational' | 'reversible' | 'external-action';
+  rawText: string;
+};
+
+<span class="comment">// 任务产物 — ArtifactFactory 输出</span>
+type Artifact = {
   id: string;
-  type: IntentType;
-  title: string;
-  body: string;
-  icon: string;
-  timestamp: number;
-  orbit: 'inner' | 'outer';  <span class="comment">// 内圈/外圈</span>
-  angle: number;               <span class="comment"># 扇形角度 0-360°</span>
-}
+  kind: Intent['kind'] | 'confirmation' | 'clarification' | 'error';
+  priority: 'primary' | 'secondary' | 'ambient';
+  zone: 'focus' | 'near' | 'far';        <span class="comment">// 三层空间化</span>
+  status: 'active' | 'complete' | 'waiting' | 'pinned';
+  expiresAt?: number;                      <span class="comment">// 仅低优先级未固定项可过期</span>
+  actions: Array&lt;'confirm' | 'cancel' | 'edit' | 'expand' | 'pin' | 'dismiss'&gt;;
+};
 
-<span class="comment">// 状态转换触发条件</span>
-type StateTransition =
-  | { from: 'idle', to: 'listening', trigger: 'user_click' | 'voice_wake' }
-  | { from: 'listening', to: 'understanding', trigger: 'input_end' }
-  | { from: 'understanding', to: 'thinking', trigger: 'intent_parsed' }
-  | { from: 'thinking', to: 'responding', trigger: 'response_ready' }
-  | { from: 'responding', to: 'idle', trigger: 'timeout_3s' };
+<span class="comment">// 状态转换事件（显式事件驱动，非自动超时）</span>
+type StateEvent =
+  | 'START_INPUT' | 'FINAL_TRANSCRIPT' | 'PARSED'
+  | 'CONFIRM' | 'CLARIFY' | 'FAIL' | 'CANCEL' | 'TIMEOUT';
 </pre>
+</div>
+
+<h3>8 模块完整边界（PRD v0.2 §13）</h3>
+<p>状态机迁移、权限、动画时长、外部调用都由对应模块负责，<mark class="k">不得由 IntentRouter 或 ArtifactFactory 越界控制</mark>：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>模块</th><th>职责</th><th>P0 简化方式</th></tr></thead>
+<tbody>
+<tr><td><code>Orb</code></td><td>渲染光核、边缘光、状态视觉</td><td>CSS 基础层；Canvas 只增强粒子/涟漪</td></tr>
+<tr><td><code>StateMachine</code></td><td>处理事件、守卫状态迁移、定时器</td><td>显式事件：START_INPUT/FINAL_TRANSCRIPT/PARSED/CONFIRM/FAIL/CANCEL</td></tr>
+<tr><td><code>InputLayer</code></td><td>文字、快捷情境、模拟/真实语音</td><td>真实语音失败自动回到文字，不阻断流程</td></tr>
+<tr><td><code>IntentRouter</code></td><td>本地规则解析、置信度、风险判断</td><td>预设输入 + 可预测的本地 JSON</td></tr>
+<tr><td><code>Orchestrator</code></td><td>澄清、确认、Skill 调度、状态事件</td><td>所有外部调用预留接口，P0 返回模拟结果</td></tr>
+<tr><td><code>ArtifactFactory</code></td><td>根据 Intent 选择模板与字段</td><td>七个白名单模板，不执行任意 UI 代码</td></tr>
+<tr><td><code>SpatialLayout</code></td><td>槽位计算、碰撞避免、层次迁移</td><td>有限槽位 + 边界检测；不引入 3D 引擎</td></tr>
+<tr><td><code>A11yAnnouncer</code></td><td>读屏状态、键盘焦点、减少动效</td><td>单独组件，避免 Canvas 成为唯一信息源</td></tr>
+</tbody>
+</table>
 </div>
 </section>
 
@@ -346,44 +386,46 @@ type StateTransition =
 <h2><span class="num">03</span> Sprint 规划总览</h2>
 
 <div class="sprint-timeline">
-  <div class="sprint-card" style="border-top:3px solid var(--accent)">
-    <div class="sprint-num">Sprint 1</div>
+  <div class="sprint-card" style="border-top:3px solid var(--success)">
+    <div class="sprint-num">Sprint 1 ✅</div>
     <div class="sprint-title">光球核心与状态机</div>
     <div class="sprint-desc">搭建项目骨架，实现能量光球 5 态视觉与状态切换</div>
     <ul class="sprint-features">
-      <li>F1 光球渲染</li>
-      <li>F2 五态状态机</li>
-      <li>F4 状态切换控制</li>
-      <li>F9 文字输入意图</li>
+      <li>F1 光球渲染 ✅</li>
+      <li>F2 五态状态机 ✅</li>
+      <li>F4 状态切换控制 ✅</li>
+      <li>F9 文字输入意图 ✅</li>
     </ul>
   </div>
   <div class="sprint-card" style="border-top:3px solid var(--accent2)">
     <div class="sprint-num">Sprint 2</div>
-    <div class="sprint-title">倾听反馈与理解确认</div>
-    <div class="sprint-desc">实现 Q2"我在听，并且我懂了"的完整反馈链路</div>
+    <div class="sprint-title">8 态扩展 + 倾听反馈 + 三步确认</div>
+    <div class="sprint-desc">扩展状态机为 8 态，实现三步理解确认与风险分级</div>
     <ul class="sprint-features">
-      <li>F3 状态切换过渡动效</li>
+      <li>F2 扩展: 5→8 态</li>
+      <li>F3 状态过渡动效</li>
       <li>F7 声波可视化</li>
-      <li>F8 两步理解确认</li>
+      <li>F6 三步确认 + 风险分级</li>
     </ul>
   </div>
   <div class="sprint-card" style="border-top:3px solid var(--accent3)">
     <div class="sprint-num">Sprint 3</div>
-    <div class="sprint-title">GenUI 卡片与空间化</div>
-    <div class="sprint-desc">实现 Q3 信息涌现——卡片从光球中生长，星轨布局</div>
+    <div class="sprint-title">数据契约 + GenUI 产物 + 三层空间化</div>
+    <div class="sprint-desc">Intent/Artifact 契约 + 7 类产物 + focus/near/far 三层</div>
     <ul class="sprint-features">
-      <li>F5 GenUI 卡片系统</li>
-      <li>F6 空间化信息层</li>
+      <li>F5 IntentRouter + 契约</li>
+      <li>F7 7 类 Artifact</li>
+      <li>F8 三层空间化</li>
     </ul>
   </div>
   <div class="sprint-card" style="border-top:3px solid #a78bfa">
     <div class="sprint-num">Sprint 4</div>
-    <div class="sprint-title">P1 增强体验</div>
-    <div class="sprint-desc">语音识别、音频波形、粒子效果、错误处理、无障碍</div>
+    <div class="sprint-title">上下文连续性 + 失败无障碍 + P1</div>
+    <div class="sprint-desc">上下文提示、错误恢复、无障碍、语音/粒子增强</div>
     <ul class="sprint-features">
-      <li>F10-F11 语音</li>
-      <li>F13-F15 卡片交互</li>
-      <li>F16-F18 视觉增强</li>
+      <li>F9 上下文连续性</li>
+      <li>F10 失败/取消/无障碍</li>
+      <li>P1 语音/粒子/环境光</li>
     </ul>
   </div>
 </div>
@@ -393,12 +435,17 @@ type StateTransition =
 <table>
 <thead><tr><th>Sprint</th><th>Feature</th><th>核心交付</th><th>验收标准</th></tr></thead>
 <tbody>
-<tr><td><strong>S1</strong></td><td>F1/F2/F4/F9</td><td>可交互光球 + 5 态切换 + 文字输入</td><td>打开即运行，点击切换状态，输入文字触发 Listening→Understanding</td></tr>
-<tr><td><strong>S2</strong></td><td>F3/F7/F8</td><td>状态过渡动效 + 声波 + 理解确认气泡</td><td>状态切换有空间动效，声波实时跳动，"我懂了"两步确认可见</td></tr>
-<tr><td><strong>S3</strong></td><td>F5/F6</td><td>5 种卡片从光球涌现 + 星轨布局</td><td>输入"天气"弹出天气卡片，多卡片扇形排列，超过 3 个进星轨</td></tr>
-<tr><td><strong>S4</strong></td><td>F10-F18</td><td>语音 + 粒子 + 错误处理 + 无障碍</td><td>语音输入可用，粒子旋转效果，错误红色脉动，prefers-reduced-motion 生效</td></tr>
+<tr><td><strong>S1 ✅</strong></td><td>F1/F2/F4/F9</td><td>可交互光球 + 5 态切换 + 文字输入</td><td>打开即运行，点击切换状态，输入文字触发 Listening→Understanding</td></tr>
+<tr><td><strong>S2</strong></td><td>F2扩展/F3/F7/F6</td><td>8 态状态机 + 过渡动效 + 声波 + 三步确认 + 风险分级</td><td>captured/executing/clarifying/error 可见；external-action 必须确认</td></tr>
+<tr><td><strong>S3</strong></td><td>F5/F7/F8</td><td>Intent/Artifact 契约 + 7 类产物 + focus/near/far 三层</td><td>输入产生对应 Artifact；多产物空间层次而非列表；已有产物不跳位</td></tr>
+<tr><td><strong>S4</strong></td><td>F9/F10 + P1</td><td>上下文连续性 + 失败恢复 + 无障碍 + 语音/粒子</td><td>"把它改到周三"可续接；6 类错误可恢复；prefers-reduced-motion 生效</td></tr>
 </tbody>
 </table>
+</div>
+
+<div class="callout callout-purple">
+<span class="label">PRD v0.2 F 编号对照</span>
+<p style="margin:0">PRD v0.2 将功能模块重新编号为 F1-F10。与 dev-plan v0.1 的对应关系：F1-F4 不变；原 F5（GenUI 卡片）→ F7（任务产物）；原 F6（空间化）→ F8；原 F7（声波）并入 F2（listening 态）；原 F8（两步确认）→ F6（三步确认 + 风险分级）；原 F9（文字输入）→ F5（IntentRouter 的一部分）；新增 F9（上下文连续性）和 F10（失败无障碍）。</p>
 </div>
 </section>
 
@@ -513,15 +560,27 @@ type StateTransition =
 </ul>
 </div>
 
-<h3>Sprint 1 交付检查</h3>
+<h3>Sprint 1 交付检查 ✅</h3>
 <div class="callout callout-purple">
-<span class="label">Sprint 1 Definition of Done</span>
+<span class="label">Sprint 1 Definition of Done — 已完成</span>
 <ul>
-<li>项目可通过 <code>npm run dev</code> 启动</li>
-<li>打开页面即看到呼吸的光球</li>
-<li>5 个状态按钮可切换光球视觉</li>
-<li>文字输入可触发完整状态流转</li>
-<li>构建产物可离线打开运行（P0 零依赖）</li>
+<li>✅ 项目可通过 <code>npm run dev</code> 启动</li>
+<li>✅ 打开页面即看到呼吸的光球</li>
+<li>✅ 5 个状态按钮可切换光球视觉</li>
+<li>✅ 文字输入可触发完整状态流转</li>
+<li>✅ 构建产物可离线打开运行（P0 零依赖）</li>
+</ul>
+</div>
+
+<h3>Sprint 2 前置任务：8 态状态机扩展（PRD v0.2）</h3>
+<div class="callout callout-warn">
+<span class="label">从 5 态扩展到 8 态</span>
+<p style="margin:0 0 0.5rem">PRD v0.2 将状态机从 5 态（idle/listening/understanding/thinking/responding）扩展为 <strong>8 态</strong>，新增 4 个状态及其精确规格。这是 Sprint 2 的首要任务：</p>
+<ul style="margin:0">
+<li><code>captured</code> — 已收到：外环 350ms 内从外向内收拢至 0.82 倍；声波停止；转写固定</li>
+<li><code>executing</code> — 编排/执行：内核轻微旋转（8s 一圈），不使用不确定的无限加载条；超过 4s 显示可取消</li>
+<li><code>clarifying</code> — 澄清：光核保持温和紫色、停止旋转；只问一个最小必要问题，提供 2-3 个明确选项</li>
+<li><code>error</code> / <code>timeout</code> — 错误：红色/琥珀色短脉冲各最多 2 次后静止；图形轮廓改为断环；含文字原因和可执行恢复路径</li>
 </ul>
 </div>
 </section>
@@ -602,32 +661,55 @@ type StateTransition =
 </ul>
 </div>
 
-<h3>F8：两步理解确认</h3>
+<h3>F6：三步理解确认 + 风险分级（PRD v0.2 升级）</h3>
 <div class="card card-purple">
 <h4>实现内容</h4>
-<p>这是对核心问题"我在听，<strong>并且我懂了</strong>"中"并且我懂了"部分的关键回答：</p>
+<p>PRD v0.2 将原"两步确认"升级为<strong>三步理解确认</strong>，并引入<strong>风险分级</strong>。"听到"不等于"理解"，系统必须按顺序提供：</p>
 <ul>
-<li><strong>第一步 — "收到"</strong>（Understanding 态）：
+<li><strong>第一步 — "收到输入"（captured 态）</strong>：
   <ul>
-    <li>光球从 Listening 切换到 Understanding</li>
-    <li>声波动画停止</li>
-    <li>光球从外缘向内收缩（缩放 1.12→0.95），颜色青→紫渐变</li>
-    <li>转写文字固定为最终结果</li>
+    <li>停止声波、固定最终转写</li>
+    <li>光由外向内收拢（外环 350ms 内从外向内收拢至 0.82 倍）</li>
+    <li>状态文本为"已收到"</li>
     <li>传达"我已经收到了你的完整输入"</li>
   </ul>
 </li>
-<li><strong>第二步 — "懂了"</strong>（Thinking 完成后）：
+<li><strong>第二步 — "理解意图"（understanding 态）</strong>：
   <ul>
-    <li>光球短暂闪烁一次亮色脉冲（200ms）</li>
-    <li>底部出现<strong>语义确认气泡</strong>——意图复述文字（如"明白，你想知道明天北京的天气情况"）</li>
-    <li>气泡半透明淡入，3 秒后自动淡出</li>
-    <li>传达"我理解了你的意图"</li>
+    <li>内层亮度上升，暖紫 <code>hsl(278 70% 64%)</code>，200ms 脉冲 + 600ms 内聚</li>
+    <li>展示<strong>意图复述</strong>——可读句子复述动作、对象、时间与关键条件（如"你想在今天 15:00 提醒小李发送资料。"）</li>
+    <li>置信度不足时进入 clarifying 态，只问一个最小必要问题</li>
+  </ul>
+</li>
+<li><strong>第三步 — "执行确认"（仅 external-action）</strong>：
+  <ul>
+    <li>仅对可能产生外部副作用的动作显示确认/取消</li>
+    <li>查询类任务（informational）不增加多余确认，直接进入 executing/responding</li>
+    <li>可撤销操作（reversible）展示意图复述，用户可继续或取消</li>
   </ul>
 </li>
 </ul>
+
+<h4>风险分级（IntentRouter 输出）</h4>
+<div class="table-wrap">
+<table>
+<thead><tr><th>风险级别</th><th>含义</th><th>确认策略</th><th>示例</th></tr></thead>
+<tbody>
+<tr><td><code>informational</code></td><td>查询类，无副作用</td><td>不增加多余确认，直接进入 executing/responding</td><td>"明天北京天气"</td></tr>
+<tr><td><code>reversible</code></td><td>可撤销的本地操作</td><td>展示意图复述，用户可继续或取消</td><td>"记下：下周和设计团队对齐"</td></tr>
+<tr><td><code>external-action</code></td><td>可能产生外部副作用</td><td>必须展示确认产物，用户明确确认后才进入执行态</td><td>"下午三点提醒我给小李发资料"</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout callout-warn">
+<span class="label">硬性约束</span>
+<p style="margin:0"><code>external-action</code> 未经明确确认<strong>绝不</strong>进入执行态；修改后必须重新复述；取消不产生任何副作用；错误态含文字原因和可执行恢复路径。</p>
+</div>
+
 <h4>语义确认气泡设计</h4>
 <div class="code-block">
-<pre><span class="comment">/* SemanticBubble — 意图复述气泡 */</span>
+<pre><span class="comment">/* SemanticBubble — 意图复述气泡（understanding 态） */</span>
 .semantic-bubble {
   position: absolute;
   bottom: -48px;
@@ -641,15 +723,27 @@ type StateTransition =
   color: var(--accent2);
   animation: bubble-fade-in 0.3s ease-out forwards,
              bubble-fade-out 0.3s ease-in 3s forwards;
+}
+
+<span class="comment">/* ConfirmationArtifact — external-action 确认产物 */</span>
+.confirmation-artifact {
+  border: 1px solid rgba(255,184,77,0.4);
+  background: rgba(255,184,77,0.08);
+  border-radius: 12px;
+  padding: 16px;
+}
+.confirmation-artifact .actions {
+  display: flex; gap: 8px; margin-top: 12px;
 }</pre>
 </div>
 <h4>验收标准</h4>
 <ul class="checklist">
-<li>输入完成后，光球先向内收缩（"收到"）</li>
-<li>Thinking 完成后，光球闪烁一次（"懂了"）</li>
-<li>意图复述气泡淡入显示（如"明白，你想知道明天北京的天气"）</li>
-<li>气泡 3 秒后自动淡出</li>
-<li>从输入完成到"我懂了"动效延迟不超过 800ms（Thinking 模拟时长可调）</li>
+<li>输入完成后，光球先进入 captured 态（外环收拢）</li>
+<li>understanding 态展示意图复述（如"你想在今天 15:00 提醒小李发送资料。"）</li>
+<li>低风险查询（informational）不显示确认按钮，直接生成结果</li>
+<li>external-action 必须显示"确认/修改/取消"三按钮，未确认不执行</li>
+<li>clarifying 态只问一个最小必要问题，提供 2-3 个明确选项</li>
+<li>修改后必须重新复述；取消不产生任何副作用</li>
 </ul>
 </div>
 
@@ -673,99 +767,99 @@ type StateTransition =
 <h3>目标</h3>
 <p>实现 Q3"非 App、非列表"信息涌现——5 种 GenUI 卡片从光球中生长，扇形/星轨布局，气泡消散。</p>
 
-<h3>F5：GenUI 卡片系统</h3>
+<h3>F5/F7：IntentRouter + 7 类任务产物（PRD v0.2 升级）</h3>
 <div class="card card-warn">
 <h4>实现内容</h4>
+<p>PRD v0.2 将原 5 种卡片扩展为 <strong>7 类任务产物（Artifact）</strong>，每种意图类型对应一种主产物，必含字段和可用操作都受控。模型只选择产物类型、内容和优先级，<mark class="k">不能直接生成任意 DOM 或改变已有产物的位置</mark>。</p>
 <ul>
-<li><strong>5 种卡片类型</strong>：
+<li><strong>7 类产物模板</strong>：
   <div class="table-wrap" style="margin:8px 0">
   <table>
-  <thead><tr><th>Intent</th><th>卡片</th><th>关键信息</th><th>交互</th></tr></thead>
+  <thead><tr><th>意图类型</th><th>主产物</th><th>必含信息</th><th>可用操作</th></tr></thead>
   <tbody>
-  <tr><td>weather</td><td>天气卡片（暖色边框）</td><td>日期/城市/温度/图标/穿衣建议</td><td>点击展开 3 天预报</td></tr>
-  <tr><td>music</td><td>音乐卡片（紫色边框）</td><td>封面/歌名/艺术家/播放按钮</td><td>点击播放/暂停</td></tr>
-  <tr><td>timer</td><td>计时器卡片（青色边框）</td><td>倒计时数字/环形进度/标签</td><td>点击暂停/恢复</td></tr>
-  <tr><td>search</td><td>搜索结果卡片</td><td>摘要/来源/相关链接</td><td>点击展开详情</td></tr>
-  <tr><td>note</td><td>笔记卡片</td><td>时间戳/内容/标签</td><td>点击编辑</td></tr>
+  <tr><td>weather</td><td>天气摘要</td><td>日期、地点、温度、天气、建议</td><td>展开三日详情、固定</td></tr>
+  <tr><td>music</td><td>迷你播放器</td><td>封面占位、歌名、艺术家、播放状态</td><td>播放/暂停、换一首、固定</td></tr>
+  <tr><td>timer</td><td>环形计时器</td><td>标签、剩余时间、进度</td><td>暂停、继续、结束</td></tr>
+  <tr><td>reminder</td><td>确认或结果产物</td><td>动作、时间、对象、状态</td><td>确认、修改、取消、完成</td></tr>
+  <tr><td>note</td><td>速记产物</td><td>内容、时间、标签</td><td>编辑、固定、关闭</td></tr>
+  <tr><td>search</td><td>来源摘要</td><td>结论、来源、时效标记</td><td>展开、继续追问</td></tr>
+  <tr><td>route</td><td>路线摘要</td><td>目的地、预计时间、下一步</td><td>查看详情、替换目的地</td></tr>
   </tbody>
   </table>
   </div>
 </li>
-<li><strong>IntentRouter</strong>：关键词匹配 → intent type
+<li><strong>IntentRouter</strong>：关键词匹配 → Intent 类型 + 风险分级
   <ul>
-    <li>"天气/weather/温度" → weather</li>
-    <li>"放歌/music/音乐/播放" → music</li>
-    <li>"提醒/计时/timer/分钟后" → timer</li>
-    <li>"搜索/查询/搜一下" → search</li>
-    <li>"笔记/记一下/note" → note</li>
+    <li>"天气/weather/温度" → weather (informational)</li>
+    <li>"放歌/music/音乐/播放" → music (reversible)</li>
+    <li>"提醒/计时/timer/分钟后" → timer (reversible)</li>
+    <li>"提醒我给...发/发给" → reminder (external-action)</li>
+    <li>"搜索/查询/搜一下" → search (informational)</li>
+    <li>"笔记/记一下/note" → note (reversible)</li>
+    <li>"路线/去/怎么走" → route (informational)</li>
   </ul>
 </li>
-<li><strong>CardFactory</strong>：intent type → 对应卡片组件 + 预设数据</li>
-<li><strong>浮现动画</strong>：卡片从光球中心位置（<code>transform-origin: center</code>）生长浮现——<code>scale(0)→scale(1) + opacity(0)→opacity(1)</code>，300ms ease-out</li>
-<li><strong>扇形布局</strong>：≤3 个卡片时，以光球为中心扇形排列（角度间距 60°）</li>
-<li><strong>星云气泡消散</strong>：卡片沿椭圆轨道排列（长轴 180px、短轴 120px），过期后沿轨道滑出 + 淡化</li>
+<li><strong>ArtifactFactory</strong>：Intent → 对应产物模板 + 预设数据；七个白名单模板，不执行任意 UI 代码</li>
+<li><strong>涌现动画</strong>：主产物从光核位置以 <code>translate(0, 20px) scale(.95) → 1</code> 在 600ms 内进入近场；次级微泡以 80ms 错峰出现</li>
+<li><strong>涌现规则</strong>：已完成且未固定的低优先级产物可在 30 秒后渐隐到远场；<strong>倒计时、待确认动作、用户固定内容绝不自动消失</strong></li>
 </ul>
-<h4>关键算法 — 扇形位置计算</h4>
+<h4>关键算法 — 槽位计算（三层空间化）</h4>
 <div class="code-block">
-<pre><span class="comment">// LayoutEngine.ts — 扇形布局</span>
-function calculateCardPosition(index: number, total: number) {
-  const angle = (index / total) * Math.PI * 2 - Math.PI / 2;  <span class="comment">// 从顶部开始</span>
-  const radius = 180;  <span class="comment">// 椭圆长轴</span>
-  const radiusY = 120; <span class="comment">// 椭圆短轴</span>
-  return {
-    x: Math.cos(angle) * radius,
-    y: Math.sin(angle) * radiusY,
-    angle: angle * (180 / Math.PI)
-  };
+<pre><span class="comment">// SpatialLayout.ts — focus/near/far 三层槽位</span>
+type Zone = 'focus' | 'near' | 'far';
+
+function findSlot(artifact: Artifact, existing: Artifact[]): {x, y, zone} {
+  <span class="comment">// 1. 待确认/进行中 → focus（只保留一个主焦点）</span>
+  if (artifact.status === 'waiting' || artifact.status === 'active') {
+    return findFocusSlot(existing);
+  }
+  <span class="comment">// 2. 当前任务结果 → near（120° 扇区，碰撞检测）</span>
+  if (artifact.priority === 'primary' || artifact.priority === 'secondary') {
+    return findNearSlot(existing, 120);
+  }
+  <span class="comment">// 3. 已完成历史 → far（低饱和、低不透明度外层星轨）</span>
+  return findFarSlot(existing);
 }</pre>
 </div>
 <h4>验收标准</h4>
 <ul class="checklist">
-<li>输入"明天北京天气" → 天气卡片从光球中浮现</li>
-<li>输入"放首歌" → 音乐卡片浮现</li>
-<li>输入"15分钟后提醒我开会" → 计时器卡片浮现</li>
-<li>多张卡片以扇形/椭圆轨道排列</li>
-<li>卡片有浮现动画（从中心生长）</li>
-<li>同时最多显示 6 个卡片</li>
+<li>7 种意图输入均能产生对应的 Artifact 产物</li>
+<li>产物从光核位置生长浮现（600ms 动画）</li>
+<li>多产物以 focus/near/far 三层空间排列，而非纵向列表</li>
+<li>已完成未固定产物 30s 后渐隐到远场；待确认/计时器/固定内容不消失</li>
+<li>external-action 类型的 reminder 必须先产生确认产物</li>
 </ul>
 </div>
 
-<h3>F6：空间化信息层</h3>
+<h3>F8：空间化信息层（三层规则，PRD v0.2 细化）</h3>
 <div class="card card-warn">
 <h4>实现内容</h4>
-<ul>
-<li><strong>星轨布局</strong>：
-  <ul>
-    <li>内圈（半径 90px）：近期任务（最近 5 分钟），高亮，可交互</li>
-    <li>外圈（半径 150px）：历史任务，透明度 30-40%，仅可查看</li>
-  </ul>
-</li>
-<li><strong>自动升轨</strong>：新任务出现在内圈，旧任务自动向外圈迁移</li>
-<li><strong>消散机制</strong>：超过 10 个任务时，最外圈任务自动消散（淡出动画）</li>
-<li><strong>SVG 渲染</strong>：P0 用内联 SVG 绘制轨道 + 卡片节点</li>
-<li><strong>轨道缩放</strong>：滚轮可缩放轨道大小（P1）</li>
-<li><strong>位置固定</strong>：卡片一旦出现就保持位置不变，新卡片在空闲位置浮现（NN/g 可用性原则）</li>
-</ul>
-<h4>SVG 星轨结构</h4>
-<div class="code-block">
-<pre><span class="comment">&lt;!-- 星轨 SVG 结构 --&gt;</span>
-&lt;svg viewBox="0 0 500 320"&gt;
-  &lt;circle cx="250" cy="160" r="40" fill="url(#orbGrad)"/&gt;      &lt;span class="comment"&gt;&lt;!-- 中心光球 --&gt;&lt;/span&gt;
-  &lt;circle cx="250" cy="160" r="90" stroke-dasharray="3,4"/&gt;    &lt;span class="comment"&gt;&lt;!-- 内圈轨道 --&gt;&lt;/span&gt;
-  &lt;circle cx="250" cy="160" r="150" stroke-dasharray="2,6"/&gt;  &lt;span class="comment"&gt;&lt;!-- 外圈轨道 --&gt;&lt;/span&gt;
-  <span class="comment">&lt;!-- 内圈卡片节点（高亮） --&gt;</span>
-  &lt;g transform="translate(340,160)"&gt;...&lt;/g&gt;
-  <span class="comment">&lt;!-- 外圈卡片节点（淡显） --&gt;</span>
-  &lt;g transform="translate(400,160)" opacity="0.4"&gt;...&lt;/g&gt;
-&lt;/svg&gt;</pre>
+<p>PRD v0.2 将原"内圈/外圈"两层细化为 <strong>focus/near/far 三层</strong>，把"非列表"落实为有语义、有稳定性的空间组织：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>空间层</th><th>承载内容</th><th>规则</th></tr></thead>
+<tbody>
+<tr><td>焦点区 <code>focus</code></td><td>当前转写、意图复述、需要确认的主产物</td><td>只保留一个主焦点；新任务不能覆盖未处理的确认</td></tr>
+<tr><td>近场 <code>near</code></td><td>当前任务结果与最多两个相关操作</td><td>围绕光核的 120° 扇区出现；位置由任务关系、屏幕边界和碰撞算法决定，<mark class="k">不按创建顺序排成一圈</mark></td></tr>
+<tr><td>远场 <code>far</code></td><td>已完成、暂不需要但可回看的历史产物</td><td>以低饱和、低不透明度形成外层星轨；点击或拖入近场即可"拉近"</td></tr>
+</tbody>
+</table>
 </div>
+
+<h4>布局规则</h4>
+<ul>
+<li><strong>稳定性</strong>：已有产物位置锁定；新增产物只寻找空闲槽位，不重排所有旧项</li>
+<li><strong>优先级</strong>：待确认/进行中 &gt; 最新结果 &gt; 固定内容 &gt; 已完成历史。空间不足时先把已完成且未固定项退到远场，绝不压住主产物</li>
+<li><strong>交互</strong>：点击一次展开、再次点击收回；P1 支持拖拽；每个产物都能固定或关闭；关闭近场产物时，最相关远场项平滑补位</li>
+<li><strong>小屏降级</strong>：近场最多一个主产物和一个次级微泡，远场通过"上下文轨道"按钮进入</li>
+</ul>
 <h4>验收标准</h4>
 <ul class="checklist">
-<li>多个卡片以星轨方式围绕光球排列</li>
-<li>内圈卡片高亮，外圈卡片淡化</li>
-<li>新增卡片出现在内圈空闲位置</li>
-<li>超过 10 个卡片时最旧的自动消散</li>
-<li>卡片位置一旦确定不再移动</li>
+<li>多产物以 focus/near/far 三层空间排列</li>
+<li>已有产物在新产物出现时不跳位</li>
+<li>待确认/进行中产物在 focus 区，不被新产物覆盖</li>
+<li>已完成未固定产物可渐隐到远场</li>
+<li>小屏下降级为最多一个主产物 + 一个次级微泡</li>
 </ul>
 </div>
 
@@ -788,8 +882,44 @@ function calculateCardPosition(index: number, total: number) {
 <h2><span class="num">07</span> Sprint 4：P1 增强体验</h2>
 
 <h3>目标</h3>
-<p>在 P0 MVP 基础上增加语音输入、音频波形、粒子效果、卡片交互、错误处理和无障碍支持。</p>
+<p>PRD v0.2 将 F9（上下文连续性）和 F10（失败无障碍）纳入 P0 范围。Sprint 4 先完成这两项 P0 补充，再做 P1 增强（语音/粒子/环境光）。</p>
 
+<h3>F9：上下文提示与任务连续性（PRD v0.2 P0 补充）</h3>
+<div class="card card-accent">
+<h4>实现内容</h4>
+<ul>
+<li><strong>P0</strong>：同一会话内支持追问和修正，例如"把它改到周三"；最近产物保留为上下文。</li>
+<li><strong>P1</strong>：用户主动开启后，可按时间产生低优先级摘要（早晨天气/日程、会前议程），默认只在远场出现，不弹窗、不抢焦点。</li>
+<li><strong>P2</strong>：加入本地偏好与跨会话记忆；所有上下文来源、保留时长和关闭入口可见且可撤回。</li>
+</ul>
+<div class="callout">
+<span class="label">验收</span>
+<p style="margin:0">连续追问能引用最近一个可解析实体；模糊指代时必须澄清，<strong>不擅自猜测</strong>。</p>
+</div>
+</div>
+
+<h3>F10：失败、取消与无障碍（PRD v0.2 P0 补充）</h3>
+<div class="card card-accent">
+<h4>实现内容</h4>
+<p>失败不是黑屏或无限转圈；动态视觉也不能排除键盘、读屏和低动态偏好用户。</p>
+<ul>
+<li><code>Esc</code>、取消按钮、关闭按钮在所有输入/处理中可用；处理中要能立即停止模拟任务。</li>
+<li>状态文本使用 <code>role="status"</code> / <code>aria-live="polite"</code>，让不移动焦点的等待、成功和错误也能被辅助技术感知。</li>
+<li>颜色从不作为唯一状态编码；同时给出图形轮廓、文字状态和读屏文本，符合 <a href="https://www.w3.org/WAI/WCAG22/Understanding/use-of-color">WCAG 1.4.1</a>。</li>
+<li><code>prefers-reduced-motion: reduce</code> 下关闭粒子、呼吸、涟漪和位移动画，使用即时淡入和明确文本。</li>
+<li><strong>6 类错误状态必须分别覆盖</strong>：权限拒绝、语音识别不可用、无输入超时、意图不明、服务失败、布局空间不足。</li>
+</ul>
+<h4>验收标准</h4>
+<ul class="checklist">
+<li>Esc/取消按钮在所有状态可用</li>
+<li>aria-live 状态文本可被读屏感知</li>
+<li>颜色非唯一状态编码（同时有图形/文字）</li>
+<li>prefers-reduced-motion 下动画降级为即时淡入</li>
+<li>6 类错误状态各有文字原因和可执行恢复路径</li>
+</ul>
+</div>
+
+<h3>P1 增强体验</h3>
 <div class="table-wrap">
 <table>
 <thead><tr><th>Feature</th><th>模块</th><th>实现内容</th><th>复杂度</th><th>依赖</th></tr></thead>
@@ -843,6 +973,10 @@ function calculateCardPosition(index: number, total: number) {
 <h2><span class="num">08</span> 模块依赖关系</h2>
 
 <h3>依赖图</h3>
+<div class="callout callout-purple">
+<span class="label">PRD v0.2 8 模块边界</span>
+<p style="margin:0">PRD v0.2 将系统拆分为 8 个专责模块（见 §2 模块边界表）。状态机迁移、权限、动画时长、外部调用都由对应模块负责，<mark class="k">不得由 IntentRouter 或 ArtifactFactory 越界控制</mark>。下方依赖图按 F 编号组织，实现时应对照 8 模块边界确保职责清晰。</p>
+</div>
 <div class="card">
 <div style="font-family:var(--font-m);font-size:13px;line-height:2;white-space:pre">
 <span style="color:var(--accent)">F1 光球渲染</span> ──────── 所有模块的基础
@@ -888,7 +1022,7 @@ function calculateCardPosition(index: number, total: number) {
 <section id="s9">
 <h2><span class="num">09</span> 验收标准清单</h2>
 
-<h3>成功标准（来自 PRD §12）</h3>
+<h3>成功标准（来自 PRD §15）</h3>
 <div class="card card-accent">
 <ol>
 <li><strong>60fps 流畅运行</strong> — 光球动画和卡片过渡在主流浏览器中保持 60fps</li>
@@ -897,6 +1031,22 @@ function calculateCardPosition(index: number, total: number) {
 <li><strong>800ms 状态反馈</strong> — 从用户输入到"我懂了"确认动效延迟不超过 800ms</li>
 <li><strong>核心交互零依赖</strong> — 光球动画和状态切换仅用 CSS，打开 HTML 即可运行（P0 阶段）</li>
 </ol>
+</div>
+
+<h3>P0 验收清单（PRD v0.2 §15，9 条 checkbox）</h3>
+<p>以下是 PRD v0.2 新增的 P0 阶段必须逐项勾选的验收清单，比上方的宏观成功标准更具体、可执行：</p>
+<div class="card">
+<ul class="checklist">
+<li>首屏无 App 网格、底部导航或常驻聊天记录；存在感由环境光和光核传达。</li>
+<li>可以只用键盘完成"输入 → 提交 → 确认 → 查看结果 → 关闭"。</li>
+<li>从同一入口可以演示天气、音乐、计时、提醒、笔记、检索、路线等产物。</li>
+<li>对"下午三点提醒我给小李发资料"，先显示可修改的理解复述，用户确认后才生成完成态提醒。</li>
+<li>连续产生四个任务时，界面仍是焦点/近场/远场的空间层次，而不是纵向或网格排布。</li>
+<li>现有近场产物在新任务出现时不跳位；只有用户关闭或系统退场规则触发时才迁移。</li>
+<li>拒绝麦克风权限、输入超时、意图不明、模拟服务失败都可恢复，且不陷入无限状态。</li>
+<li>开启减少动效后，所有关键状态仍通过文本、轮廓和产物变化可读。</li>
+<li>移除网络后，构建后的页面仍可运行完整 P0 情境。</li>
+</ul>
 </div>
 
 <h3>P0 逐 Feature 验收</h3>
@@ -934,6 +1084,19 @@ function calculateCardPosition(index: number, total: number) {
 <h2><span class="num">10</span> Vibe Coding 提示词</h2>
 
 <p>以下是按 Sprint 组织的 Vibe Coding 提示词，可直接粘贴给 AI 编码工具使用。每个提示词包含精确参数和验收标准。</p>
+
+<h3>Vibe Coding 实施约束（PRD v0.2 §13，5 条硬性规则）</h3>
+<div class="callout callout-warn">
+<span class="label">每项实现任务必须遵守</span>
+<ol style="margin:0; padding-left:20px">
+<li>先实现状态机和本地情境，再接视觉增强；任何动画不得改变业务状态。</li>
+<li>每个新产物模板都要提供普通 HTML 语义、键盘操作、关闭/固定入口和窄屏样式。</li>
+<li>不新增 CDN、在线字体、图表库或隐式资源路径；页面在无网络情况下仍能完成 P0 流程。</li>
+<li>真实 API 必须由独立适配器调用；不可在 UI 组件内直接请求、处理密钥或决定权限。</li>
+<li>每个状态迁移都应有可测试的事件日志；用确定性计时器而不是随机延时驱动预设情境。</li>
+</ol>
+</div>
+<p>每项实现任务必须写清 <strong>触发条件 → 系统行为 → 用户所见 → 验收条件</strong>。</p>
 
 <h3>Sprint 1 提示词</h3>
 <div class="code-block">
@@ -1050,17 +1213,18 @@ function calculateCardPosition(index: number, total: number) {
 <section id="s11">
 <h2><span class="num">11</span> 风险与对策</h2>
 
+<p>PRD v0.2 §14 独立梳理了 7 项风险及其产品策略。每项都标注影响与对应的降级方案：</p>
 <div class="table-wrap">
 <table>
-<thead><tr><th>风险</th><th>影响</th><th>概率</th><th>对策</th></tr></thead>
+<thead><tr><th>风险</th><th>影响</th><th>产品策略</th></tr></thead>
 <tbody>
-<tr><td><strong>Canvas 粒子系统性能不足</strong></td><td>低配设备掉帧</td><td>中</td><td>P0 用 CSS 动画替代；P1 Canvas 仅在 Understanding/Thinking 态渲染；非活动态停止 raf</td></tr>
-<tr><td><strong>Web Speech API 兼容性</strong></td><td>iOS Safari 不支持</td><td>高</td><td>功能检测 + 降级提示"请使用文字输入"；仅 Chrome/Edge 启用语音</td></tr>
-<tr><td><strong>星轨布局算法复杂</strong></td><td>位置计算错误/重叠</td><td>中</td><td>P0 用固定角度数组（0°/60°/120°/180°/240°/300°）；P1 再做动态计算</td></tr>
-<tr><td><strong>状态机转换逻辑遗漏</strong></td><td>卡在某个状态</td><td>中</td><td>所有状态设置超时回退（Listening 8s/Thinking 10s/Responding 3s → Idle）</td></tr>
-<tr><td><strong>多动画同步问题</strong></td><td>光球/光晕/声波同步脉动不自然</td><td>低</td><td>使用素数周期（4s/5s/0.3s）避免同步</td></tr>
-<tr><td><strong>字体文件加载失败</strong></td><td>排版降级</td><td>低</td><td>font-family 后备系统字体（-apple-system, PingFang SC）；字体缺失不影响功能</td></tr>
-<tr><td><strong>Vibe Coding 生成代码偏差</strong></td><td>AI 假设错误实现</td><td>中</td><td>PRD 已提供精确参数（HSL/缩放/周期/缓动），提示词包含验收标准</td></tr>
+<tr><td><strong>语音 API 不支持或依赖云端</strong></td><td>无法识别、隐私预期不一致</td><td>能力检测 + 明示说明 + 文字入口；P0 不依赖真实语音</td></tr>
+<tr><td><strong>麦克风权限被拒绝或未响应</strong></td><td>用户被困在倾听态</td><td>立即显示文字替代和重试；8 秒无输入自动退出</td></tr>
+<tr><td><strong>模型理解错误</strong></td><td>执行错误或信任下降</td><td>两步确认、低置信度澄清、外部动作必须确认、输出 schema 校验</td></tr>
+<tr><td><strong>动态布局失控</strong></td><td>产物重叠、用户失去空间记忆</td><td>固定空间层、稳定位置、槽位上限、优先退远场而非整体重排</td></tr>
+<tr><td><strong>自动消失造成信息丢失</strong></td><td>用户焦虑、任务中断</td><td>仅让已完成且未固定的低优先级内容沉静；提供固定、展开、关闭和历史入口</td></tr>
+<tr><td><strong>动效过度或视觉不可达</strong></td><td>注意力负担、无障碍失败</td><td>减少动效开关、文本/形状冗余编码、Canvas 非唯一信息源</td></tr>
+<tr><td><strong>高影响操作</strong></td><td>未经授权的发送/创建/修改</td><td>确认产物、明确副作用、可取消、后续版本支持撤销和审计</td></tr>
 </tbody>
 </table>
 </div>

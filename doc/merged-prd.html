@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>终结点按式 OS — Merged MVP PRD v0.1</title>
+<title>终结点按式 OS — Merged MVP PRD v0.2</title>
 <style>
 @font-face { font-family: 'InstrumentSans'; src: url('./_shared/fonts/InstrumentSans-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; }
 @font-face { font-family: 'InstrumentSans'; src: url('./_shared/fonts/InstrumentSans-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; }
@@ -275,14 +275,14 @@ li { margin-bottom: 0.4rem; }
 <!-- ===== HERO ===== -->
 <div class="hero">
   <div class="tag-row">
-    <span class="tag tag-primary">Merged PRD v0.1</span>
+    <span class="tag tag-primary">Merged PRD v0.2</span>
     <span class="tag tag-secondary">AI Product Builder</span>
     <span class="tag tag-tertiary">Vibe Coding Ready</span>
   </div>
   <h1>终结点按式 OS<br>设计 AI 驱动的 OS 新范式</h1>
   <p class="subtitle">用克制的视觉与动效，回答"无 App 时代"的三个核心命题</p>
-  <p class="meta">2026-08-08 · 融合 3 份 AI 生成 PRD 的最佳实践</p>
-  <p class="merge-note">本 PRD 融合了三份独立 PRD 的精华：PRD 1（Aura OS）的"光即 AI"设计哲学与 Canvas 视觉品质、PRD 2（Intent OS）的竞品分析与状态机设计、PRD 3（Energy Orb）的产品结构与空间化信息层</p>
+  <p class="meta">2026-08-11 · 融合 3 份 AI 生成 PRD 的最佳实践 + v1.0 工程化契约</p>
+  <p class="merge-note">本 PRD 融合了三份独立 PRD 的精华：PRD 1（Aura OS）的"光即 AI"设计哲学与 Canvas 视觉品质、PRD 2（Intent OS）的竞品分析与状态机设计、PRD 3（Energy Orb）的产品结构与空间化信息层。v0.2 在 v0.1 基础上合并了 v1.0 的工程化内容：结构化数据契约、GenUI 边界规范、8 态状态机、风险降级矩阵、P0 验收清单等。</p>
 </div>
 
 <!-- ===== TOC ===== -->
@@ -298,8 +298,11 @@ li { margin-bottom: 0.4rem; }
     <li><a href="#philosophy">设计哲学：光即 AI</a></li>
     <li><a href="#answers">三大核心问题回答</a></li>
     <li><a href="#features">功能需求详情</a></li>
+    <li><a href="#contracts">结构化数据契约</a></li>
+    <li><a href="#genui-spec">信息空间与生成式产物规范</a></li>
     <li><a href="#backlog">Feature Backlog</a></li>
     <li><a href="#tech">技术实现方案</a></li>
+    <li><a href="#risks">风险、权限与降级策略</a></li>
     <li><a href="#success">成功标准与演示指南</a></li>
   </ol>
 </div>
@@ -350,6 +353,34 @@ li { margin-bottom: 0.4rem; }
   <li><strong>上下文断裂</strong>：完成一个任务（如"安排周末出行"）需要在天气、地图、日历、酒店、餐厅等多个 App 间反复切换</li>
   <li><strong>认知负荷</strong>：用户需要记住每个 App 的功能边界和交互模式，而非专注于任务本身</li>
   <li><strong>AI 割裂</strong>：各 App 内置的 AI 助手彼此孤立，无法跨 App 编排任务</li>
+</ul>
+</div>
+
+<h3>研究结论如何转化为产品决策</h3>
+<p>本 PRD 的产品判断并非凭空设计，而是将六类研究与平台信号逐条映射为可落实的产品决策。每一行都标注了"信号 → 判断 → 落实"三段式依据：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>研究信号</th><th>产品判断</th><th>Aura OS 中的落实</th></tr></thead>
+<tbody>
+<tr><td><strong>Calm Technology</strong><sup><a href="#cite-22">[22]</a></sup> 强调最少注意力、利用边缘感知，以及系统失败时仍应可用。</td><td>AI 不应永久占据中心，也不能只靠炫目的加载动效表达状态。</td><td>待机时以低亮度边缘环境光为主；只在交互时让中心光核聚焦；所有关键状态同时提供文本和可访问状态。</td></tr>
+<tr><td><strong>Apple App Intents</strong><sup><a href="#cite-2">[2]</a></sup> 将"动作"和"实体"以结构化方式暴露给系统；<strong>Snippets</strong> 区分确认与结果。</td><td>意图不是聊天消息，结果不是一段文字；动作需要结构化、可确认的呈现。</td><td>使用 <code>Intent → Skill → Artifact</code> 管线；高影响动作先产生确认产物，低风险信息直接产生结果产物。</td></tr>
+<tr><td><strong>NN/g 对 GenUI 的定义</strong><sup><a href="#cite-13">[13]</a></sup> 是为当前人、当前上下文实时生成界面，同时提醒持续变化的 UI 会损害可预测性。</td><td>不应把"生成式"理解成任意生成页面。</td><td>P0 只使用受约束的产物模板和稳定位置；模型只选择产物类型、内容和优先级，<mark class="key">不能直接生成任意 DOM 或改变已有产物的位置</mark>。</td></tr>
+<tr><td><strong>Google Research 的 Generative UI 实践</strong> 说明任务可获得定制互动界面，同时也指出生成可能慢且会出错。</td><td>先让用户立即看到状态，再逐步补充产物；速度与可靠性优先于"全量即时生成"。</td><td>200ms 内反馈已收到；P0 使用本地预设情境与结构化模拟；后续 LLM 通过受控适配器接入。</td></tr>
+<tr><td><strong>visionOS Ornaments</strong><sup><a href="#cite-17">[17]</a></sup> 说明与内容相邻、但不遮挡内容的空间化控件可以保持可发现性。</td><td>空间布局的目的不是装饰，而是让任务与上下文保持邻近、层次清楚。</td><td>当前任务在近场，历史任务退到远场；详情和控制靠近所属产物，不新增全局导航。</td></tr>
+<tr><td><strong>Web Speech API 的 SpeechRecognition</strong><sup><a href="#cite-24">[24]</a></sup> 兼容性有限，部分浏览器依赖服务端识别。</td><td>语音必须是渐进增强，文字输入必须是一等入口。</td><td>P0 可完全用文字和模拟语音运行；真实语音只在用户主动触发并通过能力检测后启用。</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>差异化定位</h3>
+<p>Aura OS 不追求取代完整操作系统，也不把所有任务压进对话流。它的差异化是：</p>
+<div class="card">
+<ul>
+  <li><strong>光即 AI</strong>：不用头像、角色或常驻聊天窗口；光的强弱、位置和方向本身是状态语言。</li>
+  <li><strong>混合存在</strong>：边缘环境光负责"在场但不打扰"，中心能量光核只在用户交互时成为注意力锚点。</li>
+  <li><strong>两步理解确认</strong>：先明确"已收到完整输入"，再用可修正的意图复述表达"我理解了"。</li>
+  <li><strong>受约束的 GenUI</strong>：根据意图生成恰当的任务产物，而不是一律生成卡片或列表。</li>
+  <li><strong>空间化记忆</strong>：以近场/远场、活跃/沉静的层次组织任务，不依赖时间倒序的堆叠列表。</li>
 </ul>
 </div>
 </section>
@@ -800,6 +831,19 @@ li { margin-bottom: 0.4rem; }
 </div>
 </div>
 
+<h3>产品使用者画像</h3>
+<p>除了上方的评审与开发画像，本 Demo 还面向三类真实产品使用者。它们的 Job 与痛点直接驱动了功能需求 F1–F8 的取舍：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>用户</th><th>典型情境</th><th>核心任务（Job）</th><th>当前痛点</th></tr></thead>
+<tbody>
+<tr><td><strong>情境切换者</strong></td><td>工作、出行、日常安排之间来回切换</td><td>"帮我把此刻需要的信息和下一步集中起来。"</td><td>在多个入口间跳转，丢失上下文。</td></tr>
+<tr><td><strong>低打扰使用者</strong></td><td>会议、通勤、夜间或不便操作屏幕时</td><td>"我想快速表达目标，也要随时能看见和修正理解。"</td><td>纯语音不适合嘈杂、隐私敏感或需要精确信息的环境。</td></tr>
+<tr><td><strong>掌控型使用者</strong></td><td>涉及提醒、日程、消息或可能产生副作用的任务</td><td>"先让我确认你理解了什么，再决定是否执行。"</td><td>黑箱自动化造成不确定感，难以撤销或更正。</td></tr>
+</tbody>
+</table>
+</div>
+
 <h3>核心使用场景（按优先级排序）</h3>
 <div class="card">
 <p><strong>场景 1：唤醒与存在感知</strong> — 用户打开 Demo，屏幕中央出现一个缓慢呼吸的能量光球，边缘有微弱光晕。没有 App 图标、没有搜索框、没有底部导航栏。光球本身传达"我在这里，随时待命"。</p>
@@ -888,6 +932,37 @@ li { margin-bottom: 0.4rem; }
 
 <p><strong>空间逻辑即语义</strong>：光在外缘 = 倾听接收，向内收缩 = 处理理解，内部旋转 = 深度思考，向外绽放 = 回应输出。"外在的输入→内部的消化→外部的输出"构成了完整的语义闭环。Understanding 态（光从外缘向内收缩）是 Intent OS 6 态状态机中贡献的关键状态<sup><a href="#cite-23">[23]</a></sup>，它将"收到"和"懂了"区分开——不是简单闪烁，而是光的位置迁移。</p>
 
+<h3>状态机精确动效规格（8 态）</h3>
+<p>上面的五步空间隐喻是概念流程；面向 Vibe Coding 的完整状态机包含 <strong>8 个状态</strong>。每个状态都明确触发条件、光的语义与参数、用户同时看到/听到的内容、以及离开条件。任何路径都可以通过 <code>Esc</code> 或取消按钮回到 <code>idle</code>：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>状态</th><th>触发</th><th>光的语义与参数</th><th>用户同时看到/听到</th><th>离开条件</th></tr></thead>
+<tbody>
+<tr><td><code>idle</code><br>待机</td><td>启动、任务收束、取消后</td><td>蓝青 <code>hsl(188 85% 58%)</code>，缩放 <code>1 → 1.05</code>，4.8s <code>ease-in-out</code> 呼吸；边缘光低亮。</td><td>"随时可以输入意图"的轻提示；不主动抢焦点。</td><td>点击光核、空格、文字输入、主动语音。</td></tr>
+<tr><td><code>listening</code><br>倾听</td><td>用户明确启动输入</td><td>外环向外伸展；音量映射 12–16 根声波，0.8s 节律；亮度增加而非无限放大。</td><td>实时转写：临时文本为弱对比，确认文本为高对比。</td><td>停顿 1.5s、提交、取消、8s 无输入。</td></tr>
+<tr><td><code>captured</code><br>已收到</td><td>输入结束</td><td>外环在 350ms 内从外向内收拢至 0.82 倍；声波停止。</td><td>已确认的转写固定，状态文本为"已收到"。</td><td>路由开始或需要补充信息。</td></tr>
+<tr><td><code>understanding</code><br>理解</td><td>参数解析完成</td><td>内层亮度上升，暖紫 <code>hsl(278 70% 64%)</code>；200ms 脉冲 + 600ms 内聚。</td><td>一句意图复述，例如"你想在今天 15:00 提醒小李发送资料。"</td><td>低风险信息直接生成结果；动作进入确认或执行。</td></tr>
+<tr><td><code>executing</code><br>编排/执行</td><td>已获准执行或等待数据</td><td>内核轻微旋转（8s 一圈），不使用不确定的无限加载条。</td><td>可见步骤或"正在生成天气摘要"；超过 4s 显示可取消、可继续等待。</td><td>成功、失败、超时或用户取消。</td></tr>
+<tr><td><code>responding</code><br>涌现</td><td>结果/产物可用</td><td>从中心向外绽放至 1.15 倍，300ms 涟漪；产物按 80ms 错峰进入近场。</td><td>结果摘要和任务产物；焦点不会被强制移动。</td><td>用户继续、产物沉静或回到待机。</td></tr>
+<tr><td><code>clarifying</code><br>澄清</td><td>置信度不足、参数缺失或冲突</td><td>光核保持温和紫色、停止旋转，避免误导为已成功。</td><td>只询问一个最小必要问题，提供 2–3 个明确选项。</td><td>用户补充、取消。</td></tr>
+<tr><td><code>error</code> / <code>timeout</code></td><td>权限拒绝、识别失败、网络/服务错误、长时间无响应</td><td>红色/琥珀色短脉冲各最多 2 次后静止；图形轮廓改为断环。</td><td>原因 + 可行动恢复项，如"未获得麦克风权限，改用文字输入"。</td><td>重试、选择降级或关闭。</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>状态转换遵循下图；任何路径都可以通过 <code>Esc</code> 或取消按钮回到 <code>idle</code>：</p>
+<pre><code>idle → listening → captured → understanding ─┬→ responding → idle
+                                               ├→ clarifying → listening
+                                               └→ executing → responding
+
+listening ──(8s 无输入 / Esc)────────────────────────────→ idle
+任一状态 ──(可恢复错误)──────────────────────────────────→ error → idle / retry</code></pre>
+
+<div class="callout">
+<span class="label">实现取舍</span>
+<p style="margin:0">核心状态和可访问文本不能依赖 Canvas。P0 采用 CSS 多层光效保证稳定，再用一个可关闭的 Canvas 覆层增加粒子、声波扰动和回应涟漪；这样保留光效层次，也避免把状态机锁进复杂的绘制代码。</p>
+</div>
+
 <h3>视觉实现规格（Aura OS 精确参数）</h3>
 <p>来自 Aura OS 的精确动效参数，为 Vibe Coding 提供可直接使用的数值：</p>
 <div class="table-wrap">
@@ -939,10 +1014,15 @@ li { margin-bottom: 0.4rem; }
 <div class="q-card">
 <div class="q-num">Q2</div>
 <h4>如何表达"我在听，并且我懂了"？</h4>
-<p><strong>答案：声波映射 + 两步理解确认 + 空间隐喻</strong></p>
+<p><strong>答案：声波映射 + 三步理解确认 + 风险分级 + 空间隐喻</strong></p>
 <p><strong>听（Listening）：</strong>光球外缘脉动加速，声波条实时映射音量，转写文字逐字浮现。</p>
-<p><strong>懂（Understood）：</strong>两步确认 — 第一步，光球从外缘向内收缩，颜色从青转紫，传达"收到完整输入"；第二步，光球闪烁一次亮色脉冲，底部出现意图复述文字（"你想知道明天北京的天气"），传达"我理解了你的意图"。</p>
-<p>空间隐喻匹配最佳实践：外缘→内收缩→中心绽放 = 接收→处理→输出<sup><a href="#cite-23">[23]</a></sup>。</p>
+<p><strong>三步确认</strong> — "听到"不等于"理解"，因此系统必须按顺序提供：</p>
+<ol>
+  <li><strong>收到输入（captured）</strong>：停止声波、固定最终转写、光由外向内收拢。</li>
+  <li><strong>理解意图（understanding）</strong>：以可读句子复述动作、对象、时间与关键条件，并展示置信度不足时的最小澄清问题。</li>
+  <li><strong>执行确认</strong>：仅对可能产生外部副作用的动作显示确认/取消；查询类任务不增加多余确认。</li>
+</ol>
+<p>这使视觉的"内聚"与语义的"复述"互相校验，避免用户只能猜测系统理解了什么。空间隐喻匹配最佳实践：外缘→内收缩→中心绽放 = 接收→处理→输出<sup><a href="#cite-23">[23]</a></sup>。</p>
 </div>
 
 <div class="q-card">
@@ -1274,13 +1354,225 @@ flowchart LR
 </tbody>
 </table>
 </div>
+
+<h4>完整模块边界（8 模块）</h4>
+<p>上表是 Demo 简化参考；下表是 v0.2 新增的<strong>完整模块边界</strong>，明确各专责模块的职责和 P0 简化方式。状态机迁移、权限、动画时长、外部调用都由对应模块负责，<mark class="key">不得由 Intent Router 或 Artifact Factory 越界控制</mark>：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>模块</th><th>职责</th><th>P0 简化方式</th><th>复杂度</th></tr></thead>
+<tbody>
+<tr><td><code>Orb</code></td><td>渲染光核、边缘光、状态视觉</td><td>CSS 基础层；Canvas 只增强粒子/涟漪</td><td><span class="cx-badge cx-mid">中</span></td></tr>
+<tr><td><code>StateMachine</code></td><td>处理事件、守卫状态迁移、定时器</td><td>显式事件：<code>START_INPUT</code>、<code>FINAL_TRANSCRIPT</code>、<code>PARSED</code>、<code>CONFIRM</code>、<code>FAIL</code>、<code>CANCEL</code></td><td><span class="cx-badge cx-mid">中</span></td></tr>
+<tr><td><code>InputLayer</code></td><td>文字、快捷情境、模拟/真实语音</td><td>真实语音失败自动回到文字，不阻断流程</td><td><span class="cx-badge cx-low">低</span></td></tr>
+<tr><td><code>IntentRouter</code></td><td>本地规则解析、置信度、风险判断</td><td>预设输入 + 可预测的本地 JSON</td><td><span class="cx-badge cx-mid">中</span></td></tr>
+<tr><td><code>Orchestrator</code></td><td>澄清、确认、Skill 调度、状态事件</td><td>所有外部调用预留接口，P0 返回模拟结果</td><td><span class="cx-badge cx-mid">中</span></td></tr>
+<tr><td><code>ArtifactFactory</code></td><td>根据 Intent 选择模板与字段</td><td>七个白名单模板，不执行任意 UI 代码</td><td><span class="cx-badge cx-mid">中</span></td></tr>
+<tr><td><code>SpatialLayout</code></td><td>槽位计算、碰撞避免、层次迁移</td><td>有限槽位 + 边界检测；不引入 3D 引擎</td><td><span class="cx-badge cx-high">高</span></td></tr>
+<tr><td><code>A11yAnnouncer</code></td><td>读屏状态、键盘焦点、减少动效</td><td>单独组件，避免 Canvas 成为唯一信息源</td><td><span class="cx-badge cx-mid">中</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<hr style="border:none;border-top:1px solid var(--rule);margin:48px 0">
+
+<!-- F6: 理解确认、修正与任务安全 -->
+<h3>F6. 理解确认、修正与任务安全 <span class="q-badge q2-badge">Q2</span></h3>
+
+<p>这一模块把"我懂了"从视觉确认升级为<mark class="key">可校正、可控制的语义契约</mark>。让用户知道系统理解的内容，并保持控制权。</p>
+
+<h4>风险分级</h4>
+<p>Intent Router 必须为每个意图返回风险级别，不同级别触发不同的确认策略：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>风险级别</th><th>含义</th><th>确认策略</th><th>示例</th></tr></thead>
+<tbody>
+<tr><td><code>informational</code></td><td>查询类，无副作用</td><td>不增加多余确认，直接进入 <code>executing</code> / <code>responding</code></td><td>"明天北京天气"</td></tr>
+<tr><td><code>reversible</code></td><td>可撤销的本地操作</td><td>展示意图复述，用户可继续或取消</td><td>"记下：下周和设计团队对齐"</td></tr>
+<tr><td><code>external-action</code></td><td>可能产生外部副作用</td><td>必须展示确认产物，用户明确确认后才进入执行态</td><td>"下午三点提醒我给小李发资料"</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>用户所见</h4>
+<ul>
+  <li>低风险查询看到"我将为你查看明天北京天气"；</li>
+  <li>提醒类看到"将在今天 15:00 提醒小李发送资料"，并有"确认 / 修改 / 取消"。</li>
+</ul>
+
+<div class="callout callout-warn">
+<span class="label">硬性约束</span>
+<p style="margin:0"><code>external-action</code> 未经明确确认<strong>绝不</strong>进入执行态；修改后必须重新复述；取消不产生任何副作用；错误态含文字原因和可执行恢复路径。</p>
+</div>
+
+<hr style="border:none;border-top:1px solid var(--rule);margin:48px 0">
+
+<!-- F7: 任务产物（Artifact）与自然涌现 -->
+<h3>F7. 任务产物（Artifact）与自然涌现 <span class="q-badge q3-badge">Q3</span></h3>
+
+<p>信息以完成当下任务所需的形态出现，而不是统一的卡片流。每种意图类型对应一种主产物，必含字段和可用操作都受控：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>意图类型</th><th>主产物</th><th>必含信息</th><th>可用操作</th></tr></thead>
+<tbody>
+<tr><td>天气</td><td>天气摘要</td><td>日期、地点、温度、天气、建议</td><td>展开三日详情、固定</td></tr>
+<tr><td>音乐</td><td>迷你播放器</td><td>封面占位、歌名、艺术家、播放状态</td><td>播放/暂停、换一首、固定</td></tr>
+<tr><td>计时</td><td>环形计时器</td><td>标签、剩余时间、进度</td><td>暂停、继续、结束</td></tr>
+<tr><td>提醒/计划</td><td>确认或结果产物</td><td>动作、时间、对象、状态</td><td>确认、修改、取消、完成</td></tr>
+<tr><td>笔记</td><td>速记产物</td><td>内容、时间、标签</td><td>编辑、固定、关闭</td></tr>
+<tr><td>检索</td><td>来源摘要</td><td>结论、来源、时效标记</td><td>展开、继续追问</td></tr>
+<tr><td>路线</td><td>路线摘要</td><td>目的地、预计时间、下一步</td><td>查看详情、替换目的地</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>涌现规则</h4>
+<ul>
+  <li>主产物从光核位置以 <code>translate(0, 20px) scale(.95) → 1</code> 在 600ms 内进入近场；次级微泡以 80ms 错峰出现。</li>
+  <li>产物的视觉密度由任务需求决定：计时器可更大，提醒确认保持紧凑，检索结果先给摘要再展开。</li>
+  <li>文本回复是主产物的简短说明，而不是独立的无限聊天历史。</li>
+  <li>已完成且未固定的低优先级产物可在 30 秒后渐隐到远场；<strong>倒计时、待确认动作、用户固定内容绝不自动消失</strong>。</li>
+</ul>
+
+<hr style="border:none;border-top:1px solid var(--rule);margin:48px 0">
+
+<!-- F8: 空间化信息层（细化） -->
+<h3>F8. 空间化信息层（细化规则） <span class="q-badge q3-badge">Q3</span></h3>
+
+<p>F4 给出了空间化的概念演示，本模块定义其落地规则：把"非列表"落实为有语义、有稳定性的空间组织，而不是把列表排成圆形。</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>空间层</th><th>承载内容</th><th>规则</th></tr></thead>
+<tbody>
+<tr><td>焦点区 <code>focus</code></td><td>当前转写、意图复述、需要确认的主产物</td><td>只保留一个主焦点；新任务不能覆盖未处理的确认。</td></tr>
+<tr><td>近场 <code>near</code></td><td>当前任务结果与最多两个相关操作</td><td>围绕光核的 120° 扇区出现；位置由任务关系、屏幕边界和碰撞算法决定，<mark class="key">不按创建顺序排成一圈</mark>。</td></tr>
+<tr><td>远场 <code>far</code></td><td>已完成、暂不需要但可回看的历史产物</td><td>以低饱和、低不透明度形成外层星轨；点击或拖入近场即可"拉近"。</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>布局规则</h4>
+<ul>
+  <li><strong>稳定性</strong>：已有产物位置锁定；新增产物只寻找空闲槽位，不重排所有旧项。</li>
+  <li><strong>优先级</strong>：待确认/进行中 &gt; 最新结果 &gt; 固定内容 &gt; 已完成历史。空间不足时先把已完成且未固定项退到远场，绝不压住主产物。</li>
+  <li><strong>交互</strong>：点击一次展开、再次点击收回；P1 支持拖拽；每个产物都能固定或关闭；关闭近场产物时，最相关远场项平滑补位。</li>
+  <li><strong>小屏降级</strong>：近场最多一个主产物和一个次级微泡，远场通过"上下文轨道"按钮进入，保持阅读与触达范围。</li>
+</ul>
+
+<hr style="border:none;border-top:1px solid var(--rule);margin:48px 0">
+
+<!-- F9: 上下文提示与任务连续性 -->
+<h3>F9. 上下文提示与任务连续性</h3>
+
+<p>让信息在合适时机靠近用户，但不把系统变成推送机器。</p>
+<ul>
+  <li><strong>P0</strong>：同一会话内支持追问和修正，例如"把它改到周三"；最近产物保留为上下文。</li>
+  <li><strong>P1</strong>：用户主动开启后，可按时间产生低优先级摘要（早晨天气/日程、会前议程），默认只在远场出现，不弹窗、不抢焦点。</li>
+  <li><strong>P2</strong>：加入本地偏好与跨会话记忆；所有上下文来源、保留时长和关闭入口可见且可撤回。</li>
+</ul>
+<div class="callout">
+<span class="label">验收</span>
+<p style="margin:0">连续追问能引用最近一个可解析实体；模糊指代时必须澄清，<strong>不擅自猜测</strong>。</p>
+</div>
+
+<hr style="border:none;border-top:1px solid var(--rule);margin:48px 0">
+
+<!-- F10: 失败、取消与无障碍 -->
+<h3>F10. 失败、取消与无障碍</h3>
+
+<p>失败不是黑屏或无限转圈；动态视觉也不能排除键盘、读屏和低动态偏好用户。</p>
+<ul>
+  <li><code>Esc</code>、取消按钮、关闭按钮在所有输入/处理中可用；处理中要能立即停止模拟任务。</li>
+  <li>状态文本使用 <code>role="status"</code> / <code>aria-live="polite"</code>，让不移动焦点的等待、成功和错误也能被辅助技术感知，符合 <a href="https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html">WCAG 状态消息</a> 的目标。</li>
+  <li>颜色从不作为唯一状态编码；同时给出图形轮廓、文字状态和读屏文本，符合 <a href="https://www.w3.org/WAI/WCAG22/Understanding/use-of-color">WCAG 1.4.1</a>。</li>
+  <li><code>prefers-reduced-motion: reduce</code> 下关闭粒子、呼吸、涟漪和位移动画，使用即时淡入和明确文本；参考 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion">MDN</a>。</li>
+  <li>错误状态必须分别覆盖：<strong>权限拒绝、语音识别不可用、无输入超时、意图不明、服务失败、布局空间不足</strong>。</li>
+</ul>
 </section>
 
-<!-- ===== 10. Feature Backlog ===== -->
+<!-- ===== 10. 结构化数据契约 ===== -->
+<section id="contracts">
+<h2><span class="num">10</span> 结构化数据契约</h2>
+
+<p>这一章是 v0.2 新增的工程化契约。<mark class="key">模型或规则可以返回内容和选择，但不能直接控制布局、权限、动画时长或执行外部动作</mark>。<code>Intent</code> 与 <code>Artifact</code> 的结构化边界是关键约束。</p>
+
+<h3>Intent 类型</h3>
+<pre><code>type Intent = {
+  kind: 'weather' | 'music' | 'timer' | 'reminder' | 'note' | 'search' | 'route'
+  entities: Record&lt;string, string | number | boolean&gt;
+  confidence: number
+  risk: 'informational' | 'reversible' | 'external-action'
+  rawText: string
+}</code></pre>
+
+<h3>Artifact 类型</h3>
+<pre><code>type Artifact = {
+  id: string
+  kind: Intent['kind'] | 'confirmation' | 'clarification' | 'error'
+  priority: 'primary' | 'secondary' | 'ambient'
+  zone: 'focus' | 'near' | 'far'
+  status: 'active' | 'complete' | 'waiting' | 'pinned'
+  expiresAt?: number
+  actions: Array&lt;'confirm' | 'cancel' | 'edit' | 'expand' | 'pin' | 'dismiss'&gt;
+}</code></pre>
+
+<div class="callout callout-purple">
+<span class="label">边界约束</span>
+<p style="margin:0">Intent Router 可返回 <code>kind</code>、<code>entities</code>、<code>confidence</code>、<code>risk</code>；Artifact Factory 在此基础上选择 <code>priority</code>、<code>zone</code> 和 <code>actions</code>。但二者都<strong>不能</strong>越界控制：状态机迁移、权限授予、动画时长、外部服务调用均由各专责模块负责。</p>
+</div>
+</section>
+
+<!-- ===== 11. 信息空间与生成式产物规范 ===== -->
+<section id="genui-spec">
+<h2><span class="num">11</span> 信息空间与生成式产物规范</h2>
+
+<p>生成式界面只生成<mark class="key">受约束的任务产物</mark>，而不是动态改变整个系统。本章定义 GenUI 的边界、任务生命周期和情境提示规则。</p>
+
+<h3>GenUI 的边界</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>可以动态决定</th><th>必须固定/受控</th></tr></thead>
+<tbody>
+<tr><td>选择哪一种产物模板</td><td>状态机、权限规则、可执行操作集合</td></tr>
+<tr><td>摘要内容、字段优先级、次级信息</td><td>字号下限、对比度、焦点顺序、关闭/取消入口</td></tr>
+<tr><td>近场/远场优先级、是否需要澄清</td><td>空间层数量、碰撞规则、已有产物的稳定位置</td></tr>
+<tr><td>模板内的推荐操作</td><td>外部服务调用、支付/发送/创建等副作用的确认规则</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>任务生命周期</h3>
+<pre><code>生长（emerge） → 活跃（active） →
+  ├─ 固定（pinned）
+  ├─ 完成（complete）→ 远场沉静（ambient）→ 关闭（dismissed）
+  └─ 等待确认（waiting）→ 确认/修改/取消</code></pre>
+
+<h3>情境提示规则</h3>
+<p>情境提示继承"时空上下文"优势，但避免沦为另一个通知中心：</p>
+<ul>
+  <li>只在用户显式授权相应上下文后工作；默认关闭。</li>
+  <li>同一时段最多出现一个环境提示，且只能位于远场。</li>
+  <li>优先呈现能立即改变决策的信息，例如会前 10 分钟的议程或降雨前的出行提醒。</li>
+  <li>用户连续两次忽略同类提示后，降低此类提示优先级；任何提示可一键关闭或查看原因。</li>
+</ul>
+</section>
+
+<!-- ===== 12. Feature Backlog ===== -->
 <section id="backlog">
-<h2><span class="num">10</span> Feature Backlog</h2>
+<h2><span class="num">12</span> Feature Backlog</h2>
 
 <p>以下是按优先级排列的功能清单，MVP 聚焦 P0 功能完成核心交互闭环。每个 Feature 标注了对应的核心问题和实现复杂度。</p>
+
+<div class="callout callout-purple">
+<span class="label">价值维度（v0.2 新增）</span>
+<p style="margin:0 0 0.5rem">除了"问题"列（Q1/Q2/Q3）映射核心问题外，每个 Feature 还可按以下四个价值维度归类，便于评估投入产出：</p>
+<ul style="margin:0">
+  <li><strong>存在</strong>（Existence）— AI 如何在场（对应 Q1）</li>
+  <li><strong>信任</strong>（Trust）— 听 / 懂 / 控制（对应 Q2）</li>
+  <li><strong>涌现</strong>（Emergence）— 非 App、非列表的信息呈现（对应 Q3）</li>
+  <li><strong>基础</strong>（Foundation）— 可运行性与体验质量（无对应 Q，跨问题）</li>
+</ul>
+<p style="margin:0.5rem 0 0"><strong>完成定义</strong>：每个 Feature 的"完成定义"参见 §09 功能需求详情中对应模块的验收条件，以及 §15 P0 验收清单。</p>
+</div>
 
 <h3>P0 — MVP 核心（必须完成）</h3>
 <div class="table-wrap">
@@ -1346,9 +1638,9 @@ flowchart LR
 </div>
 </section>
 
-<!-- ===== 11. 技术实现方案 ===== -->
+<!-- ===== 13. 技术实现方案 ===== -->
 <section id="tech">
-<h2><span class="num">11</span> 技术实现方案</h2>
+<h2><span class="num">13</span> 技术实现方案</h2>
 
 <h3>技术栈选型</h3>
 <div class="card">
@@ -1412,11 +1704,44 @@ flowchart LR
 <p style="margin:0"><strong>P0 阶段（MVP）</strong>：核心交互使用纯 CSS 动画 + 内联 SVG，<mark class="key">打开 HTML 即可运行</mark>，不依赖任何外部字体或 JS 库。这是 Aura OS 的核心优势——演示场景下"能跑"比"精美"更重要。</p>
 <p style="margin:0.5rem 0 0"><strong>P1 阶段（增强）</strong>：引入 ECharts（竞品雷达图）和 Mermaid（状态机/流程图）作为渐进增强。字体文件（InstrumentSans/JetBrainsMono/WorkSans）提升排版品质，但缺失时降级为系统字体。所有 JS 库本地引用（<code>./_shared/js/</code>），不依赖 CDN。</p>
 </div>
+
+<h3>Vibe Coding 实施约束</h3>
+<p>每项实现任务必须写清 <strong>触发条件 → 系统行为 → 用户所见 → 验收条件</strong>。编码时遵守：</p>
+<div class="card">
+<ol>
+  <li>先实现状态机和本地情境，再接视觉增强；任何动画不得改变业务状态。</li>
+  <li>每个新产物模板都要提供普通 HTML 语义、键盘操作、关闭/固定入口和窄屏样式。</li>
+  <li>不新增 CDN、在线字体、图表库或隐式资源路径；页面在无网络情况下仍能完成 P0 流程。</li>
+  <li>真实 API 必须由独立适配器调用；不可在 UI 组件内直接请求、处理密钥或决定权限。</li>
+  <li>每个状态迁移都应有可测试的事件日志；用确定性计时器而不是随机延时驱动预设情境。</li>
+</ol>
+</div>
 </section>
 
-<!-- ===== 12. 成功标准与演示指南 ===== -->
+<!-- ===== 14. 风险、权限与降级策略 ===== -->
+<section id="risks">
+<h2><span class="num">14</span> 风险、权限与降级策略</h2>
+
+<p>本章独立梳理 Demo 可能遇到的风险及其产品策略。每一项都标注影响与对应的降级方案：</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>风险</th><th>影响</th><th>产品策略</th></tr></thead>
+<tbody>
+<tr><td><strong>语音 API 不支持或依赖云端</strong></td><td>无法识别、隐私预期不一致</td><td>能力检测 + 明示说明 + 文字入口；P0 不依赖真实语音。</td></tr>
+<tr><td><strong>麦克风权限被拒绝或未响应</strong></td><td>用户被困在倾听态</td><td>立即显示文字替代和重试；8 秒无输入自动退出。</td></tr>
+<tr><td><strong>模型理解错误</strong></td><td>执行错误或信任下降</td><td>两步确认、低置信度澄清、外部动作必须确认、输出 schema 校验。</td></tr>
+<tr><td><strong>动态布局失控</strong></td><td>产物重叠、用户失去空间记忆</td><td>固定空间层、稳定位置、槽位上限、优先退远场而非整体重排。</td></tr>
+<tr><td><strong>自动消失造成信息丢失</strong></td><td>用户焦虑、任务中断</td><td>仅让已完成且未固定的低优先级内容沉静；提供固定、展开、关闭和历史入口。</td></tr>
+<tr><td><strong>动效过度或视觉不可达</strong></td><td>注意力负担、无障碍失败</td><td>减少动效开关、文本/形状冗余编码、Canvas 非唯一信息源。</td></tr>
+<tr><td><strong>高影响操作</strong></td><td>未经授权的发送/创建/修改</td><td>确认产物、明确副作用、可取消、后续版本支持撤销和审计。</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ===== 15. 成功标准与演示指南 ===== -->
 <section id="success">
-<h2><span class="num">12</span> 成功标准与演示指南</h2>
+<h2><span class="num">15</span> 成功标准与演示指南</h2>
 
 <h3>成功标准（可衡量）</h3>
 <div class="card card-accent">
@@ -1427,6 +1752,22 @@ flowchart LR
   <li><strong>800ms 状态反馈</strong> — 从用户输入到"我懂了"确认动效延迟不超过 800ms</li>
   <li><strong>核心交互零依赖</strong> — 光球动画和状态切换仅用 CSS，打开 HTML 即可运行（P0 阶段）；ECharts/Mermaid/字体为渐进增强，缺失时降级</li>
 </ol>
+</div>
+
+<h3>P0 验收清单</h3>
+<p>以下 9 条是 P0 阶段必须逐项勾选的验收清单，比上方的宏观成功标准更具体、可执行：</p>
+<div class="card">
+<ul style="list-style:none;margin-left:0">
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 首屏无 App 网格、底部导航或常驻聊天记录；存在感由环境光和光核传达。</li>
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 可以只用键盘完成"输入 → 提交 → 确认 → 查看结果 → 关闭"。</li>
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 从同一入口可以演示天气、音乐、计时、提醒、笔记、检索、路线等产物。</li>
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 对"下午三点提醒我给小李发资料"，先显示可修改的理解复述，用户确认后才生成完成态提醒。</li>
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 连续产生四个任务时，界面仍是焦点/近场/远场的空间层次，而不是纵向或网格排布。</li>
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 现有近场产物在新任务出现时不跳位；只有用户关闭或系统退场规则触发时才迁移。</li>
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 拒绝麦克风权限、输入超时、意图不明、模拟服务失败都可恢复，且不陷入无限状态。</li>
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 开启减少动效后，所有关键状态仍通过文本、轮廓和产物变化可读。</li>
+  <li style="margin-bottom:0.6rem"><input type="checkbox" disabled> 移除网络后，构建后的页面仍可运行完整 P0 情境。</li>
+</ul>
 </div>
 
 <h3>5 分钟演示脚本</h3>

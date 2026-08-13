@@ -6,10 +6,10 @@ import './IntentInput.css'
 /**
  * F9: 文字输入意图（PRD v0.2 — 8 态状态机）
  *
- * - 输入框：底部居中，深色背景 + 青色边框聚焦
+ * - 底部命令栏（对照 nexus_os_4 "Type a request..."）：横跨主区域底部，青色边框聚焦
  * - 回车提交：触发 Listening → Captured → Understanding → Executing → Responding → Idle
- * - 3 个快捷按钮：天气 / 音乐 / 提醒
- * - 转写显示区：光球下方显示输入文字
+ * - 上方一行快捷提示：天气 / 音乐 / 提醒
+ * - 用户输入的意图文字改由 <IntentHeader> 在顶部以大字呈现
  *
  * 状态流转时序：
  *   Listening(0.5s) → Captured(0.35s) → Understanding(0.6s) → Executing(1.5s) → Responding(2s) → Idle
@@ -48,7 +48,6 @@ export function IntentInput() {
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const orbState = useOrbStore((s) => s.orbState)
   const setOrbState = useOrbStore((s) => s.setOrbState)
-  const transcript = useOrbStore((s) => s.transcript)
   const setTranscript = useOrbStore((s) => s.setTranscript)
   const setIntentFlowActive = useOrbStore((s) => s.setIntentFlowActive)
   const setArtifacts = useOrbStore((s) => s.setArtifacts)
@@ -132,15 +131,8 @@ export function IntentInput() {
   const isFlowing = orbState !== 'idle'
 
   return (
-    <>
-      {/* 转写显示区 — 光球下方 */}
-      {transcript && (
-        <div className="transcript-display">
-          <span className="transcript-text">{transcript}</span>
-        </div>
-      )}
-
-      {/* 快捷按钮 */}
+    <div className="intent-command-bar">
+      {/* 快捷提示 — 命令栏上方一行 */}
       <div className="quick-prompts">
         {QUICK_PROMPTS.map((prompt) => (
           <button
@@ -154,8 +146,9 @@ export function IntentInput() {
         ))}
       </div>
 
-      {/* 输入框 */}
+      {/* 命令栏输入 — 对照 nexus_os_4 messaging footer */}
       <div className="intent-input-wrapper">
+        <span className="material-symbols-outlined intent-input-icon">auto_awesome</span>
         <input
           type="text"
           className="intent-input"
@@ -175,6 +168,6 @@ export function IntentInput() {
           →
         </button>
       </div>
-    </>
+    </div>
   )
 }

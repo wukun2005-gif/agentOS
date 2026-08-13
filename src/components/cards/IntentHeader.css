@@ -1,0 +1,52 @@
+/* ===== Nexus OS — Intent Header（顶部意图引言，对照 nexus_os_2） ===== */
+
+.intent-header {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(900px, 80%);
+  text-align: center;
+  z-index: 25;
+  pointer-events: none;
+  animation: intent-header-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.intent-header-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.intent-header-text {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--primary);
+  opacity: 0.9;
+  text-shadow: 0 0 30px rgba(0, 219, 233, 0.3);
+}
+
+@keyframes intent-header-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intent-header {
+    animation: none;
+  }
+}

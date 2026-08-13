@@ -140,18 +140,6 @@ body {
 .top-bar-status {
   display: flex;
   align-items: center;
-  gap: var(--element-gap);
-}
-
-.status-icon {
-  font-size: 20px;
-  color: var(--on-surface-variant);
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.status-icon:hover {
-  color: var(--primary);
 }
 
 .top-bar-avatar {
@@ -231,68 +219,6 @@ body {
   width: 100%;
   height: 100%;
   padding-left: 80px;
-}
-
-/* ===== Bottom Nav (Mobile) ===== */
-.bottom-nav {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0 16px 24px;
-  height: 80px;
-  z-index: 50;
-  background: rgba(19, 19, 20, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(59, 73, 75, 0.3);
-  border-top-left-radius: var(--r-default);
-  border-top-right-radius: var(--r-default);
-}
-
-.bottom-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  color: var(--on-surface-variant);
-  opacity: 0.5;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.bottom-nav-item.active {
-  color: var(--primary-container);
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.bottom-nav-item .material-symbols-outlined {
-  font-size: 24px;
-}
-
-.bottom-nav-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-/* ===== Mobile responsive ===== */
-@media (max-width: 768px) {
-  .side-nav {
-    display: none;
-  }
-  .bottom-nav {
-    display: flex;
-  }
-  .main-canvas {
-    padding-left: 0;
-    padding-bottom: 80px;
-  }
 }
 
 /* Accessibility — reduced motion */

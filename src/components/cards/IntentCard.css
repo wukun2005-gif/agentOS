@@ -5,8 +5,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
+  width: min(1100px, 90%);
+  height: calc(100% - 240px);
+  max-height: 560px;
   pointer-events: none;
   z-index: 12;
 }
@@ -49,25 +50,20 @@
   }
 }
 
-/* 卡片位置 — 浮在 Core 右侧 */
+/* 卡片错落浮动 — 对照 nexus_os_2（宽容器内 top/left/right 错落，不挤压 Core） */
 .intent-card.position-right {
-  top: 50%;
-  right: calc(50% - 280px);
-  transform: translateY(-50%);
+  top: 6%;
+  right: 2%;
 }
 
-/* 卡片位置 — 浮在 Core 左侧 */
 .intent-card.position-left {
-  top: 50%;
-  left: calc(50% - 280px);
-  transform: translateY(-50%);
+  top: 14%;
+  left: 2%;
 }
 
-/* 卡片位置 — 浮在 Core 上方 */
 .intent-card.position-top {
-  top: calc(50% - 200px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: calc(50% - 150px);
 }
 
 /* 卡片头部 */

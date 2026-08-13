@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useOrbStore } from '../../store/useOrbStore'
 import { ORB_STATE_LABELS, type OrbState } from '../orb/OrbState'
 import './StateControls.css'
@@ -6,10 +6,10 @@ import './StateControls.css'
 /**
  * F4: 状态切换控制（PRD v0.2 — 8 态状态机）
  *
- * - 8 个按钮切换状态
- * - 光球点击：Idle→Listening，再次点击取消
+ * - 光球点击层：Idle→Listening，再次点击取消
  * - 键盘快捷键：空格切换 Listening/Idle，ESC 回 Idle
- * - 状态标签：光球下方显示当前状态名
+ * - 状态标签：Core 下方显示当前状态名
+ * - 调试浮标（右下角）：8 态切换按钮折叠于此 — demo 调试用，避免占用主区域
  */
 
 const STATE_DESCRIPTIONS: Record<OrbState, string> = {
@@ -38,6 +38,7 @@ export function StateControls() {
   const orbState = useOrbStore((s) => s.orbState)
   const setOrbState = useOrbStore((s) => s.setOrbState)
   const setIntentFlowActive = useOrbStore((s) => s.setIntentFlowActive)
+  const [debugOpen, setDebugOpen] = useState(false)
 
   // 键盘快捷键
   useEffect(() => {
@@ -79,7 +80,7 @@ export function StateControls() {
 
   return (
     <>
-      {/* 状态标签 — 光球下方 */}
+      {/* 状态标签 — Core 下方 */}
       <div className="state-label">
         <span className="state-label-name">{ORB_STATE_LABELS[orbState]}</span>
         <span className="state-label-desc">{STATE_DESCRIPTIONS[orbState]}</span>
@@ -94,18 +95,34 @@ export function StateControls() {
         aria-label="点击切换聆听状态"
       />
 
-      {/* 按钮组 — 底部 */}
-      <div className="state-controls">
-        {ALL_STATES.map((state) => (
-          <button
-            key={state}
-            className={`state-btn ${orbState === state ? 'active' : ''}`}
-            onClick={() => handleStateChange(state)}
-            aria-pressed={orbState === state}
-          >
-            {ORB_STATE_LABELS[state]}
-          </button>
-        ))}
+      {/* 调试浮标 — 右下角，8 态切换（demo 调试，不占主区域） */}
+      <div className={`debug-dock ${debugOpen ? 'open' : ''}`}>
+        {debugOpen && (
+          <div className="debug-states">
+            <span className="debug-states-title">STATES</span>
+            {ALL_STATES.map((state) => (
+              <button
+                key={state}
+                className={`state-btn ${orbState === state ? 'active' : ''} ${
+                  state === 'error' ? 'error-btn' : ''
+                }`}
+                onClick={() => handleStateChange(state)}
+                aria-pressed={orbState === state}
+              >
+                {ORB_STATE_LABELS[state]}
+              </button>
+            ))}
+          </div>
+        )}
+        <button
+          className="debug-toggle"
+          onClick={() => setDebugOpen((v) => !v)}
+          aria-label="切换调试状态面板"
+          aria-expanded={debugOpen}
+        >
+          <span className="material-symbols-outlined">{debugOpen ? 'close' : 'tune'}</span>
+          {!debugOpen && <span className="debug-toggle-label">STATES</span>}
+        </button>
       </div>
     </>
   )

@@ -1,6 +1,6 @@
 import { useState, useRef, type KeyboardEvent } from 'react'
 import { useOrbStore } from '../../store/useOrbStore'
-import type { OrbState } from '../orb/OrbState'
+import type { OrbState, Artifact, IntentKind } from '../orb/OrbState'
 import './IntentInput.css'
 
 /**
@@ -30,6 +30,19 @@ const FLOW_TIMING: Array<{ state: OrbState; duration: number }> = [
   { state: 'responding', duration: 2000 },
 ]
 
+/** 从原始文字推断意图类型 */
+function inferKind(rawText: string): IntentKind {
+  const text = rawText.toLowerCase()
+  if (text.includes('天气') || text.includes('weather')) return 'weather'
+  if (text.includes('歌') || text.includes('音乐') || text.includes('music')) return 'music'
+  if (text.includes('分钟') || text.includes('定时') || text.includes('timer')) return 'timer'
+  if (text.includes('提醒') || text.includes('remind')) return 'reminder'
+  if (text.includes('笔记') || text.includes('note')) return 'note'
+  if (text.includes('搜索') || text.includes('search')) return 'search'
+  if (text.includes('路线') || text.includes('route')) return 'route'
+  return 'weather'
+}
+
 export function IntentInput() {
   const [input, setInput] = useState('')
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
@@ -38,6 +51,7 @@ export function IntentInput() {
   const transcript = useOrbStore((s) => s.transcript)
   const setTranscript = useOrbStore((s) => s.setTranscript)
   const setIntentFlowActive = useOrbStore((s) => s.setIntentFlowActive)
+  const setArtifacts = useOrbStore((s) => s.setArtifacts)
 
   /** 清除所有定时器 */
   const clearAllTimers = () => {
@@ -66,13 +80,29 @@ export function IntentInput() {
     for (let i = 0; i < FLOW_TIMING.length; i++) {
       elapsed += FLOW_TIMING[i].duration
       const isLast = i === FLOW_TIMING.length - 1
+      const nextState = isLast ? 'idle' : FLOW_TIMING[i + 1].state
 
       const timer = setTimeout(() => {
         if (isLast) {
           setIntentFlowActive(false)
           setOrbState('idle')
+          // 延迟清除卡片（让用户看到 responding 态的产物）
+          setTimeout(() => setArtifacts([]), 300)
         } else {
-          setOrbState(FLOW_TIMING[i + 1].state)
+          setOrbState(nextState)
+          // 进入 executing 态时生成 artifact
+          if (nextState === 'executing') {
+            const kind = inferKind(text)
+            const artifact: Artifact = {
+              id: `art-${Date.now()}`,
+              kind,
+              priority: 'primary',
+              zone: 'focus',
+              status: 'active',
+              actions: ['confirm', 'cancel'],
+            }
+            setArtifacts([artifact])
+          }
         }
       }, elapsed)
       timersRef.current.push(timer)

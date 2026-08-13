@@ -1,0 +1,212 @@
+/* ===== Nexus OS — Intent Cards (Glassmorphism + Shimmer Border) ===== */
+
+.intent-cards-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 12;
+}
+
+.intent-card {
+  position: absolute;
+  width: 300px;
+  padding: 20px;
+  border-radius: var(--r-lg);
+  background: rgba(10, 10, 11, 0.6);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid transparent;
+  background-image: linear-gradient(rgba(10, 10, 11, 0.6), rgba(10, 10, 11, 0.6)),
+    linear-gradient(135deg, rgba(0, 240, 255, 0.5) 0%, transparent 40%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(0, 240, 255, 0.08);
+  pointer-events: auto;
+  animation: card-emerge 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.3s ease;
+}
+
+.intent-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(0, 240, 255, 0.15);
+}
+
+@keyframes card-emerge {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 卡片位置 — 浮在 Core 右侧 */
+.intent-card.position-right {
+  top: 50%;
+  right: calc(50% - 280px);
+  transform: translateY(-50%);
+}
+
+/* 卡片位置 — 浮在 Core 左侧 */
+.intent-card.position-left {
+  top: 50%;
+  left: calc(50% - 280px);
+  transform: translateY(-50%);
+}
+
+/* 卡片位置 — 浮在 Core 上方 */
+.intent-card.position-top {
+  top: calc(50% - 200px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 卡片头部 */
+.intent-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.intent-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.intent-card-icon .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--primary-container);
+}
+
+.intent-card-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--on-surface);
+  letter-spacing: -0.01em;
+}
+
+.intent-card-badge {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary-container);
+}
+
+/* 卡片内容 */
+.intent-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.intent-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--r-default);
+  background: rgba(28, 27, 28, 0.4);
+  border: 1px solid rgba(59, 73, 75, 0.2);
+}
+
+.intent-card-row.highlight {
+  background: rgba(0, 240, 255, 0.08);
+  border-color: rgba(0, 240, 255, 0.2);
+}
+
+.intent-card-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  opacity: 0.7;
+}
+
+.intent-card-value {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--on-surface);
+  font-weight: 500;
+}
+
+.intent-card-value.primary {
+  color: var(--primary-container);
+}
+
+.intent-card-value.large {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.intent-card-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--on-surface-variant);
+  line-height: 1.5;
+}
+
+/* 卡片底部操作按钮 */
+.intent-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.intent-card-btn {
+  flex: 1;
+  padding: 8px 14px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: var(--r-full);
+  background: rgba(0, 240, 255, 0.05);
+  color: var(--primary-container);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.intent-card-btn:hover {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+}
+
+.intent-card-btn.primary {
+  background: linear-gradient(135deg, var(--primary-container), var(--primary-fixed-dim));
+  color: var(--on-primary);
+  border-color: transparent;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+}
+
+.intent-card-btn.primary:hover {
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.5);
+}

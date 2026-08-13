@@ -1,22 +1,22 @@
-/* ===== F4: 状态切换控制样式 ===== */
+/* ===== Nexus OS — State Controls (Liquid Light) ===== */
 
-/* 光球点击层 — 覆盖光球区域，透明 */
+/* 光球点击层 — 覆盖光核区域，透明 */
 .orb-click-layer {
   position: absolute;
-  top: 45%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 160px;
-  height: 160px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 10;
+  z-index: 15;
 }
 
-/* 状态标签 — 光球下方 */
+/* 状态标签 — 光核下方 */
 .state-label {
   position: absolute;
-  top: calc(45% + 100px);
+  top: calc(50% + 130px);
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -26,51 +26,76 @@
 
 .state-label-name {
   display: block;
+  font-family: var(--font-display);
   font-size: 18px;
   font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 4px;
+  color: var(--primary);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
   transition: color 0.3s ease;
 }
 
 .state-label-desc {
   display: block;
-  font-size: 13px;
-  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
 }
 
 /* 按钮组 — 底部居中 */
 .state-controls {
   position: absolute;
-  bottom: 120px;
+  bottom: 130px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
   z-index: 20;
+  padding: 6px;
+  background: rgba(10, 10, 11, 0.6);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid transparent;
+  background-image: linear-gradient(rgba(10, 10, 11, 0.6), rgba(10, 10, 11, 0.6)),
+    linear-gradient(135deg, rgba(0, 240, 255, 0.3) 0%, transparent 40%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  border-radius: var(--r-full);
 }
 
 .state-btn {
-  padding: 8px 16px;
-  border: 1px solid var(--rule, #1e2535);
-  border-radius: 8px;
-  background: rgba(19, 24, 38, 0.7);
-  backdrop-filter: blur(10px);
-  color: var(--muted, #8b95a8);
+  padding: 8px 14px;
+  border: none;
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-family: var(--font-body);
   font-size: 13px;
-  font-family: -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  white-space: nowrap;
 }
 
 .state-btn:hover {
-  border-color: var(--accent, #00e5cc);
-  color: var(--ink, #e8edf5);
+  color: var(--primary);
+  background: rgba(0, 240, 255, 0.08);
 }
 
 .state-btn.active {
-  background: rgba(0, 229, 204, 0.15);
-  border-color: var(--accent, #00e5cc);
-  color: var(--accent, #00e5cc);
-  box-shadow: 0 0 12px rgba(0, 229, 204, 0.2);
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--primary-container);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.3),
+    inset 0 0 8px rgba(0, 240, 255, 0.1);
+}
+
+/* 错误态特殊样式 */
+.state-btn.active.error-btn {
+  background: rgba(255, 180, 171, 0.15);
+  color: var(--error);
+  box-shadow: 0 0 16px rgba(255, 180, 171, 0.3);
 }

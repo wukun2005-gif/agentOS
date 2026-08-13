@@ -13,12 +13,12 @@ import './StateControls.css'
  */
 
 const STATE_DESCRIPTIONS: Record<OrbState, string> = {
-  idle: '待命 — 青绿色缓慢呼吸',
+  idle: '待命 — 电光青有机呼吸',
   listening: '聆听中 — 快速脉动接收',
   captured: '已收到 — 外环向内收拢',
-  understanding: '理解中 — 暖紫脉冲内聚',
-  executing: '执行中 — 内核轻微旋转',
-  responding: '回应中 — 暖金色轻摆',
+  understanding: '理解中 — 青→紫渐变内聚',
+  executing: '执行中 — 紫色内核旋转',
+  responding: '回应中 — 纯白轻摆',
   clarifying: '澄清中 — 温和紫色静止',
   error: '错误 — 红色短脉冲 + 断环',
 }

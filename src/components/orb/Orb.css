@@ -1,243 +1,367 @@
-/* ===== F1+F2: 能量光球 — 5 态动画 ===== */
+/* ===== Nexus OS — Liquid Light Core (8 态状态机) ===== */
 
-.orb {
+.orb-container {
   position: absolute;
-  top: 45%;
+  top: 50%;
   left: 50%;
-  width: 160px;
-  height: 160px;
+  transform: translate(-50%, -50%);
+  width: var(--core-size);
+  height: var(--core-size);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Outer ambient glow — large blurred radial */
+.orb-ambient {
+  position: absolute;
+  inset: -80px;
   border-radius: 50%;
-  cursor: pointer;
-  will-change: transform, background, box-shadow;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* ---- Idle 态：5s 呼吸，青绿色 #00e5cc @60% ---- */
-.orb.idle {
   background: radial-gradient(
-    circle at 35% 35%,
-    rgba(0, 229, 204, 0.8),
-    rgba(0, 229, 204, 0.2) 50%,
-    transparent 70%
+    circle,
+    rgba(0, 240, 255, 0.15) 0%,
+    rgba(0, 240, 255, 0) 70%
   );
-  box-shadow:
-    0 0 40px rgba(0, 229, 204, 0.4),
-    0 0 80px rgba(0, 229, 204, 0.2),
-    inset 0 0 30px rgba(0, 229, 204, 0.3);
-  animation: orb-idle 5s ease-in-out infinite;
+  filter: blur(60px);
+  animation: ambient-pulse 6s ease-in-out infinite alternate;
+  z-index: 1;
 }
 
-@keyframes orb-idle {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.08); }
+@keyframes ambient-pulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
 }
 
-/* ---- Listening 态：0.8s 快速脉动，青色 #00e5cc @100% ---- */
-.orb.listening {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(0, 229, 204, 1),
-    rgba(0, 229, 204, 0.4) 50%,
-    transparent 70%
-  );
-  box-shadow:
-    0 0 60px rgba(0, 229, 204, 0.6),
-    0 0 120px rgba(0, 229, 204, 0.3),
-    inset 0 0 40px rgba(0, 229, 204, 0.5);
-  animation: orb-listening 0.8s ease-in-out infinite;
-}
-
-@keyframes orb-listening {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.12); }
-}
-
-/* ---- Understanding 态：0.4s 向内收缩，青→紫渐变 ---- */
-.orb.understanding {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(124, 92, 255, 0.8),
-    rgba(0, 229, 204, 0.3) 50%,
-    transparent 70%
-  );
-  box-shadow:
-    0 0 50px rgba(124, 92, 255, 0.5),
-    0 0 100px rgba(124, 92, 255, 0.2),
-    inset 0 0 35px rgba(124, 92, 255, 0.4);
-  animation: orb-understanding 0.4s ease-in forwards;
-}
-
-@keyframes orb-understanding {
-  0% { transform: translate(-50%, -50%) scale(1.12); }
-  100% { transform: translate(-50%, -50%) scale(0.95); }
-}
-
-/* ---- Thinking 态：2s 旋转脉动，紫色 #7c5cff @90% ---- */
-.orb.thinking {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(124, 92, 255, 0.9),
-    rgba(124, 92, 255, 0.3) 50%,
-    transparent 70%
-  );
-  box-shadow:
-    0 0 55px rgba(124, 92, 255, 0.5),
-    0 0 110px rgba(124, 92, 255, 0.25),
-    inset 0 0 40px rgba(124, 92, 255, 0.5);
-  animation: orb-thinking 2s ease-in-out infinite;
-}
-
-@keyframes orb-thinking {
-  0% { transform: translate(-50%, -50%) scale(0.95) rotate(0deg); }
-  50% { transform: translate(-50%, -50%) scale(1.05) rotate(180deg); }
-  100% { transform: translate(-50%, -50%) scale(0.95) rotate(360deg); }
-}
-
-/* ---- Responding 态：1.5s 左右轻摆，暖橙 #ffb84d @90% ---- */
-.orb.responding {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(255, 184, 77, 0.9),
-    rgba(255, 184, 77, 0.3) 50%,
-    transparent 70%
-  );
-  box-shadow:
-    0 0 55px rgba(255, 184, 77, 0.5),
-    0 0 110px rgba(255, 184, 77, 0.25),
-    inset 0 0 40px rgba(255, 184, 77, 0.4);
-  animation: orb-responding 1.5s ease-in-out infinite;
-}
-
-@keyframes orb-responding {
-  0%, 100% { transform: translate(-50%, -50%) translateX(-3px); }
-  50% { transform: translate(-50%, -50%) translateX(3px); }
-}
-
-/* ---- Captured 态：350ms 外环向内收拢至 0.82 倍，青色保持 ---- */
-.orb.captured {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(0, 229, 204, 0.9),
-    rgba(0, 229, 204, 0.3) 50%,
-    transparent 70%
-  );
-  box-shadow:
-    0 0 50px rgba(0, 229, 204, 0.5),
-    0 0 100px rgba(0, 229, 204, 0.2),
-    inset 0 0 35px rgba(0, 229, 204, 0.4);
-  animation: orb-captured 0.35s ease-in forwards;
-}
-
-@keyframes orb-captured {
-  0% { transform: translate(-50%, -50%) scale(1.12); }
-  100% { transform: translate(-50%, -50%) scale(0.82); }
-}
-
-/* ---- Executing 态：8s 内核轻微旋转，紫色 #7c5cff @80% ---- */
-.orb.executing {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(124, 92, 255, 0.8),
-    rgba(124, 92, 255, 0.25) 50%,
-    transparent 70%
-  );
-  box-shadow:
-    0 0 50px rgba(124, 92, 255, 0.45),
-    0 0 100px rgba(124, 92, 255, 0.2),
-    inset 0 0 35px rgba(124, 92, 255, 0.45);
-  animation: orb-executing 8s linear infinite;
-}
-
-@keyframes orb-executing {
-  0% { transform: translate(-50%, -50%) scale(0.95) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) scale(0.95) rotate(360deg); }
-}
-
-/* ---- Clarifying 态：温和紫色，停止旋转，轻微脉动 ---- */
-.orb.clarifying {
-  background: radial-gradient(
-    circle at 35% 35%,
-    hsla(278, 50%, 60%, 0.75),
-    hsla(278, 50%, 60%, 0.2) 50%,
-    transparent 70%
-  );
-  box-shadow:
-    0 0 45px hsla(278, 50%, 60%, 0.4),
-    0 0 90px hsla(278, 50%, 60%, 0.15),
-    inset 0 0 30px hsla(278, 50%, 60%, 0.35);
-  animation: orb-clarifying 1.6s ease-in-out infinite;
-}
-
-@keyframes orb-clarifying {
-  0%, 100% { transform: translate(-50%, -50%) scale(0.9); }
-  50% { transform: translate(-50%, -50%) scale(0.96); }
-}
-
-/* ---- Error 态：红色短脉冲 2 次后静止，断环轮廓 ---- */
-.orb.error {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(255, 92, 92, 0.85),
-    rgba(255, 184, 77, 0.3) 50%,
-    transparent 70%
-  );
-  box-shadow:
-    0 0 50px rgba(255, 92, 92, 0.5),
-    0 0 100px rgba(255, 92, 92, 0.2),
-    inset 0 0 35px rgba(255, 92, 92, 0.4);
-  animation: orb-error 0.8s ease-in-out 2 forwards;
-  /* 断环轮廓：dashed border 替代实线 */
-  border: 2px dashed rgba(255, 92, 92, 0.5);
-}
-
-@keyframes orb-error {
-  0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 1; }
-  50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.7; }
-}
-
-/* ---- 光晕环 1：4s 周期 ---- */
-.orb::before {
-  content: '';
+/* The Core — organic liquid-light shape */
+.orb {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 200px;
   height: 200px;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 229, 204, 0.2);
-  animation: halo-1 4s ease-in-out infinite;
-  pointer-events: none;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--primary-container),
+    var(--secondary-container)
+  );
+  filter: blur(30px);
+  opacity: 0.85;
+  transform: translate(-50%, -50%);
+  will-change: transform, filter, opacity, border-radius;
+  transition: border-radius 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.4s ease, opacity 0.4s ease;
+  z-index: 10;
+  animation: orb-idle 6s ease-in-out infinite alternate;
 }
 
-@keyframes halo-1 {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
-  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.1; }
-}
-
-/* ---- 光晕环 2：5s 周期（素数关系避免同步） ---- */
-.orb::after {
-  content: '';
+/* Inner core highlight — sharp light catch */
+.orb-inner {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 240px;
-  height: 240px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 229, 204, 0.1);
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(0, 240, 255, 0.4) 30%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%);
+  filter: blur(8px);
+  z-index: 11;
+  pointer-events: none;
+  animation: inner-shimmer 4s ease-in-out infinite alternate;
+}
+
+@keyframes inner-shimmer {
+  0% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+/* ---- Idle 态：6s 有机呼吸，青色 ---- */
+.orb.idle {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  filter: blur(30px);
+  opacity: 0.8;
+}
+
+@keyframes orb-idle {
+  0% {
+    transform: translate(-50%, -50%) scale(0.95);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.05);
+    border-radius: 40% 60% 70% 30% / 40% 70% 30% 60%;
+  }
+}
+
+/* ---- Listening 态：0.8s 快速脉动，青色增强 ---- */
+.orb.listening {
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--primary-fixed),
+    var(--primary-container)
+  );
+  filter: blur(25px);
+  opacity: 1;
+  box-shadow: 0 0 60px rgba(0, 240, 255, 0.5);
+  animation: orb-listening 0.8s ease-in-out infinite;
+}
+
+@keyframes orb-listening {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    border-radius: 40% 60% 60% 40% / 50% 50% 50% 50%;
+  }
+}
+
+/* ---- Captured 态：350ms 外环向内收拢 ---- */
+.orb.captured {
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--primary-fixed),
+    var(--primary-container)
+  );
+  filter: blur(20px);
+  opacity: 0.95;
+  box-shadow: 0 0 50px rgba(0, 240, 255, 0.4);
+  animation: orb-captured 0.35s ease-in forwards;
+}
+
+@keyframes orb-captured {
+  0% {
+    transform: translate(-50%, -50%) scale(1.15);
+    border-radius: 50% 50% 50% 50%;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.82);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+}
+
+/* ---- Understanding 态：0.4s 向内收缩，青→紫渐变 ---- */
+.orb.understanding {
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--secondary),
+    var(--primary-container)
+  );
+  filter: blur(28px);
+  opacity: 0.85;
+  box-shadow: 0 0 50px rgba(208, 188, 255, 0.4);
+  animation: orb-understanding 0.6s ease-in-out forwards;
+}
+
+@keyframes orb-understanding {
+  0% {
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+}
+
+/* ---- Executing 态：8s 内核旋转，紫色 ---- */
+.orb.executing {
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--secondary),
+    var(--secondary-container)
+  );
+  filter: blur(30px);
+  opacity: 0.8;
+  box-shadow: 0 0 55px rgba(208, 188, 255, 0.45);
+  animation: orb-executing 8s linear infinite;
+}
+
+@keyframes orb-executing {
+  0% {
+    transform: translate(-50%, -50%) scale(0.95) rotate(0deg);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1) rotate(180deg);
+    border-radius: 40% 60% 70% 30% / 40% 70% 30% 60%;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.95) rotate(360deg);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+}
+
+/* ---- Responding 态：1.5s 轻摆，白色（Ethereal White） ---- */
+.orb.responding {
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--tertiary),
+    var(--primary-fixed-dim)
+  );
+  filter: blur(25px);
+  opacity: 0.9;
+  box-shadow: 0 0 55px rgba(245, 245, 245, 0.4);
+  animation: orb-responding 1.5s ease-in-out infinite;
+}
+
+@keyframes orb-responding {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateX(-4px) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateX(4px) scale(1.05);
+  }
+}
+
+/* ---- Clarifying 态：温和紫色，停止旋转，轻微脉动 ---- */
+.orb.clarifying {
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--secondary-fixed-dim),
+    var(--secondary-container)
+  );
+  filter: blur(32px);
+  opacity: 0.75;
+  box-shadow: 0 0 45px rgba(208, 188, 255, 0.35);
+  animation: orb-clarifying 1.6s ease-in-out infinite;
+}
+
+@keyframes orb-clarifying {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+}
+
+/* ---- Error 态：红色短脉冲 2 次后静止，断环轮廓 ---- */
+.orb.error {
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--error),
+    var(--error-container)
+  );
+  filter: blur(28px);
+  opacity: 0.85;
+  box-shadow: 0 0 50px rgba(255, 180, 171, 0.45);
+  border: 2px dashed rgba(255, 180, 171, 0.5);
+  border-radius: 50%;
+  animation: orb-error 0.8s ease-in-out 2 forwards;
+}
+
+@keyframes orb-error {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.7;
+  }
+}
+
+/* ---- Halo ring 1：4s 周期 ---- */
+.orb-halo-1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  transform: translate(-50%, -50%);
+  animation: halo-1 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes halo-1 {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.1;
+  }
+}
+
+/* ---- Halo ring 2：5s 周期 ---- */
+.orb-halo-2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  transform: translate(-50%, -50%);
   animation: halo-2 5s ease-in-out infinite;
   pointer-events: none;
+  z-index: 5;
 }
 
 @keyframes halo-2 {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
-  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.05; }
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.05;
+  }
+}
+
+/* ---- Particles ---- */
+.particle {
+  position: absolute;
+  background: var(--primary);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 3;
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(var(--tx, 50px), var(--ty, 50px)) scale(1.5);
+    opacity: 0.1;
+  }
 }
 
 /* ---- Accessibility — reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   .orb,
-  .orb::before,
-  .orb::after {
+  .orb-inner,
+  .orb-ambient,
+  .orb-halo-1,
+  .orb-halo-2,
+  .particle {
     animation: none !important;
   }
 }

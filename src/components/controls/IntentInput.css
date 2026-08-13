@@ -1,9 +1,9 @@
-/* ===== F9: 文字输入意图样式 ===== */
+/* ===== Nexus OS — Intent Input (Liquid Light) ===== */
 
-/* 转写显示区 — 光球下方 */
+/* 转写显示区 — 光核下方 */
 .transcript-display {
   position: absolute;
-  top: calc(45% + 130px);
+  top: calc(50% + 190px);
   left: 50%;
   transform: translateX(-50%);
   max-width: 400px;
@@ -15,23 +15,32 @@
 
 .transcript-text {
   display: inline-block;
-  padding: 6px 16px;
-  background: rgba(0, 229, 204, 0.08);
-  border: 1px solid rgba(0, 229, 204, 0.2);
-  border-radius: 999px;
+  padding: 8px 18px;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: var(--r-full);
+  font-family: var(--font-body);
   font-size: 14px;
-  color: var(--accent, #00e5cc);
+  color: var(--primary);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 @keyframes transcript-fade-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* 快捷按钮 */
 .quick-prompts {
   position: absolute;
-  bottom: 180px;
+  bottom: 190px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -43,27 +52,29 @@
 }
 
 .quick-prompt-btn {
-  padding: 6px 14px;
-  border: 1px solid var(--rule, #1e2535);
-  border-radius: 999px;
-  background: rgba(19, 24, 38, 0.6);
-  backdrop-filter: blur(8px);
-  color: var(--muted, #8b95a8);
-  font-size: 12px;
-  font-family: -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif;
+  padding: 8px 16px;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: var(--r-full);
+  background: rgba(28, 27, 28, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--on-surface-variant);
+  font-family: var(--font-body);
+  font-size: 13px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   white-space: nowrap;
 }
 
 .quick-prompt-btn:hover:not(:disabled) {
-  border-color: var(--accent, #00e5cc);
-  color: var(--accent, #00e5cc);
-  background: rgba(0, 229, 204, 0.08);
+  border-color: rgba(0, 240, 255, 0.4);
+  color: var(--primary-container);
+  background: rgba(0, 240, 255, 0.08);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
 }
 
 .quick-prompt-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
@@ -75,32 +86,40 @@
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: min(420px, 80vw);
+  gap: 12px;
+  width: min(480px, 80vw);
   z-index: 20;
+  padding: 6px 6px 6px 20px;
+  background: rgba(10, 10, 11, 0.6);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid transparent;
+  background-image: linear-gradient(rgba(10, 10, 11, 0.6), rgba(10, 10, 11, 0.6)),
+    linear-gradient(135deg, rgba(0, 240, 255, 0.3) 0%, transparent 40%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  border-radius: var(--r-full);
+  transition: box-shadow 0.3s ease;
+}
+
+.intent-input-wrapper:focus-within {
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.2);
 }
 
 .intent-input {
   flex: 1;
-  padding: 12px 18px;
-  border: 1px solid var(--rule, #1e2535);
-  border-radius: 999px;
-  background: rgba(19, 24, 38, 0.8);
-  backdrop-filter: blur(10px);
-  color: var(--ink, #e8edf5);
+  border: none;
+  background: transparent;
+  color: var(--on-surface);
+  font-family: var(--font-body);
   font-size: 15px;
-  font-family: -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif;
   outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.intent-input:focus {
-  border-color: var(--accent, #00e5cc);
-  box-shadow: 0 0 0 3px rgba(0, 229, 204, 0.12);
+  padding: 10px 0;
 }
 
 .intent-input::placeholder {
-  color: var(--muted, #8b95a8);
+  color: var(--on-surface-variant);
+  opacity: 0.5;
 }
 
 .intent-input:disabled {
@@ -115,22 +134,24 @@
   width: 40px;
   height: 40px;
   border: none;
-  border-radius: 50%;
-  background: var(--accent, #00e5cc);
-  color: var(--bg, #0a0e1a);
+  border-radius: var(--r-full);
+  background: linear-gradient(135deg, var(--primary-container), var(--primary-fixed-dim));
+  color: var(--on-primary);
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
 }
 
 .intent-submit:hover:not(:disabled) {
-  transform: scale(1.1);
-  box-shadow: 0 0 16px rgba(0, 229, 204, 0.4);
+  transform: scale(1.08);
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.5);
 }
 
 .intent-submit:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
+  box-shadow: none;
 }

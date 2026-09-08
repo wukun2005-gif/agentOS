@@ -189,7 +189,10 @@ body {
   cursor: pointer;
   color: var(--outline);
   transition: color 0.2s ease, background 0.2s ease;
+  border: none;
   border-right: 2px solid transparent;
+  background: transparent;
+  font: inherit;
 }
 
 .side-nav-item:hover {
@@ -216,9 +219,40 @@ body {
 /* ===== Main Canvas ===== */
 .main-canvas {
   position: relative;
-  width: 100%;
+  margin-left: 80px;
+  width: calc(100% - 80px);
   height: 100%;
-  padding-left: 80px;
+}
+
+/* 画布上部栈 — 意图引言 + AI 复述 + 晨间简报条 */
+.canvas-top {
+  position: absolute;
+  top: 72px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  z-index: 25;
+  pointer-events: none;
+}
+
+.canvas-top > * {
+  pointer-events: auto;
+}
+
+/* 画布底部栈 — 命令栏 + Dock 意图入口 */
+.canvas-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  z-index: 22;
 }
 
 /* Accessibility — reduced motion */

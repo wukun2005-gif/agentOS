@@ -2,7 +2,9 @@
 
 ## 概述
 
-Aura OS 是一个"无 App 时代"的 AI 存在范式 Demo。核心交互实体是一个能量光球（Energy Orb），通过 5 态状态机（Idle→Listening→Understanding→Thinking→Responding）表达 AI 的存在感和理解过程，信息以 GenUI 卡片形式从光球中"涌现"。
+Aura OS（Demo 品牌名 Nexus OS）是一个"无 App 时代"的 AI 存在范式 Demo。核心交互实体是一个能量光球（Energy Orb），通过 8 态状态机（idle→listening→captured→understanding→executing→responding→clarifying→error）表达 AI 的存在感和理解过程，信息以 GenUI 卡片形式从光球中"涌现"。
+
+**PRD v1.0 起，场景从生活助手转向打工人办公生产力**：邮件、会议、IM、文档四大信息源，价值主张是"消除意图→操作的翻译成本"，并以"今日节省时长"量化。
 
 ## 技术架构
 
@@ -19,17 +21,29 @@ Aura OS 是一个"无 App 时代"的 AI 存在范式 Demo。核心交互实体�
 
 ```
 表现层（Presentation）
-  └── React 组件树: Orb / Waveform / CardLayer / SpatialLayout / Controls
+  └── React 组件树: Orb / CardLayer(3 槽位) / Dock / SystemTray / Panels / Controls
 
 状态层（State）
-  └── Zustand store: orbState + setOrbState + cardList
+  └── Zustand store: orbState + artifacts + notifications + timeSaved + scenario
 
 逻辑层（Logic）
-  └── IntentRouter / CardFactory / LayoutEngine
+  └── IntentRouter（关键词 + 风险分级）/ ArtifactFactory / IntentFlow / SpatialLayout(槽位)
+
+Agent 层（PRD v1.0 新增）
+  └── BriefAgent / EmailAgent / MeetingAgent / MessageAgent / DocumentAgent
+
+数据层（Mock）
+  └── emails / meetings / messages / documents
 
 输入层（Input）
   └── TextInput（P0）→ SpeechRecognition（P1）
 ```
+
+### 关键契约
+
+- **风险分级**：`informational`（只读聚合，直接展示）→ `reversible`（可撤销）→ `external-action`（发邮件 / 同步 Jira，必须二次确认）
+- **空间槽位**：产物带 `slot: 0|1|2`，轮转分配；新产物只顶替同槽位旧产物，其余卡片不跳位
+- **价值量化**：`SAVED_MINUTES` 定义各场景模拟节省时长，完成时累加到 `timeSaved`，顶栏常驻展示
 
 ### 渐进增强策略
 
@@ -41,21 +55,24 @@ Aura OS 是一个"无 App 时代"的 AI 存在范式 Demo。核心交互实体�
 
 ```
 src/
+├── agents/              # Agent 逻辑层（PRD v1.0 §5.3）
+│   └── types.ts         # 领域模型 + 产物数据契约 + 节省时长口径
+├── mock/                # mock 数据：emails / meetings / messages / documents
+├── logic/               # intentRouter / artifactFactory / intentFlow
 ├── components/
-│   ├── orb/              # 能量光球
-│   │   ├── Orb.tsx       # 光球主组件
-│   │   ├── Orb.css       # 5 态动画 keyframes
-│   │   └── OrbState.ts   # 状态类型定义
-│   ├── waveform/          # 声波可视化（Sprint 2）
-│   ├── cards/             # GenUI 卡片（Sprint 3）
-│   ├── spatial/           # 空间化布局（Sprint 3）
-│   ├── controls/          # 交互控件
-│   └── confirmation/      # 理解确认（Sprint 2）
-├── store/                 # Zustand store
-├── logic/                 # 意图路由 + 预设数据
-├── App.tsx               # 根组件
-├── App.css               # 全局样式
-└── main.tsx              # 入口
+│   ├── orb/             # 能量光球 + 状态机定义
+│   │   ├── Orb.tsx      # 光球主组件
+│   │   ├── Orb.css      # 8 态动画 keyframes
+│   │   └── OrbState.ts  # 状态类型 + 意图类型 + 产物契约
+│   ├── cards/           # 产物卡片：Email / Meeting / Message / Doc / Brief / Legacy
+│   ├── panels/          # 晨间简报条
+│   ├── dock/            # Dock 意图入口
+│   ├── system-tray/     # 系统托盘 + 通知中心
+│   └── controls/        # 命令栏 + 状态切换调试
+├── store/               # Zustand store
+├── App.tsx              # 根组件
+├── App.css              # 全局样式
+└── main.tsx             # 入口
 ```
 
 ## 核心设计
@@ -96,3 +113,5 @@ Idle → Listening → Understanding → Thinking → Responding → Idle
 | 2026-08-08 | F2: 五态状态机 — Zustand store + 5 态视觉编码 + 自动超时 | Orb.tsx/CSS, useOrbStore.ts | TBD |
 | 2026-08-08 | F4: 状态切换控制 — 按钮组 + 光球点击 + 键盘快捷键 | StateControls.tsx/CSS, App.tsx | TBD |
 | 2026-08-08 | F9: 文字输入意图 — 输入框 + 回车触发状态流转 + 快捷按钮 | IntentInput.tsx/CSS, App.tsx | TBD |
+| 2026-08-13 | Sprint 2: 8 态状态机扩展 + Nexus OS "Liquid Light" 设计迁移 | 全量样式 + Orb + Intent Cards | 7d9e044 |
+| 2026-09-08 | PRD v1.0 对齐：办公场景 P0（晨间简报 / 邮件助手 / 会议纪要 / Dock / 系统托盘）+ Agent 层 + mock 数据 + 产物槽位 + 价值量化 | agents/, mock/, logic/, cards/, dock/, system-tray/, panels/, store, App | TBD |

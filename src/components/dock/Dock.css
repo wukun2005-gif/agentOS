@@ -1,0 +1,92 @@
+/* ===== Nexus OS — Dock 意图入口 ===== */
+
+.dock {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: var(--r-lg);
+  background: rgba(10, 10, 11, 0.55);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid transparent;
+  background-image: linear-gradient(rgba(10, 10, 11, 0.55), rgba(10, 10, 11, 0.55)),
+    linear-gradient(135deg, rgba(0, 240, 255, 0.35) 0%, transparent 45%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  z-index: 22;
+}
+
+.dock-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 58px;
+  padding: 8px 4px 6px;
+  border: 1px solid transparent;
+  border-radius: var(--r-default);
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dock-item .material-symbols-outlined {
+  font-size: 22px;
+}
+
+.dock-item:hover {
+  color: var(--primary-container);
+  background: rgba(0, 240, 255, 0.08);
+  border-color: rgba(0, 240, 255, 0.25);
+  transform: translateY(-3px);
+}
+
+.dock-item:active {
+  transform: translateY(-1px);
+}
+
+.dock-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.dock-badge {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--r-full);
+  background: var(--primary-container);
+  color: var(--on-primary);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+.dock-badge.warn {
+  background: #ffb84d;
+  color: #2a1a00;
+  box-shadow: 0 0 10px rgba(255, 184, 77, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-item {
+    transition: none;
+  }
+  .dock-item:hover {
+    transform: none;
+  }
+}

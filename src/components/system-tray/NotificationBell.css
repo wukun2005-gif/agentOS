@@ -1,0 +1,6 @@
+/* ===== Nexus OS — 通知铃 ===== */
+/* 样式集中在 SystemTray.css，此文件保留以便模块自包含 */
+
+.bell-wrap {
+  position: relative;
+}

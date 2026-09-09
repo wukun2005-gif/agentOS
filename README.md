@@ -2,6 +2,8 @@
 
 <p align="center">
   <img src="assets/demo.gif" alt="Nexus OS 一键演示 — 一句话，OS 替你办完一天" width="800">
+  <br>
+  🎬 <a href="https://www.bilibili.com/video/BV1tXYx6BE6r/">Demo 视频（Bilibili）</a>
 </p>
 
 一个"无 App 时代"的 AI 交互范式演示，面向**打工人办公场景**（PRD v1.0）。

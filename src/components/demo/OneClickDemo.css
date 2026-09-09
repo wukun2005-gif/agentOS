@@ -1,0 +1,96 @@
+/* 一键演示 — 顶栏触发按钮（Liquid Light 风格） */
+.demo-launch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--outline-variant);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.18), rgba(125, 244, 255, 0.08));
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.demo-launch-btn:hover {
+  border-color: var(--primary-container);
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(125, 244, 255, 0.12));
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
+}
+.demo-launch-btn .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--primary-container);
+}
+
+/* ── 演示覆盖层 ── */
+.demo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+}
+
+/* 点击任意处退出演示 */
+.demo-click-catcher {
+  position: absolute;
+  inset: 0;
+  z-index: 9991;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* 顶部进度条 */
+.demo-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  z-index: 9993;
+}
+.demo-progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--primary-container), var(--primary-fixed));
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+  transition: width 0.35s ease;
+}
+
+/* 跟随光标的讲解气泡 */
+.demo-tooltip {
+  position: absolute;
+  z-index: 9994;
+  max-width: 400px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.95), rgba(125, 244, 255, 0.9));
+  color: #07232a;
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 6px 28px rgba(0, 240, 255, 0.4);
+  pointer-events: none;
+  display: none;
+}
+
+/* 游标 */
+.demo-cursor {
+  position: absolute;
+  z-index: 9995;
+  pointer-events: none;
+  display: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 240, 255, 0.5));
+  transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    top 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.1s ease;
+}
+
+/* 点击瞬间：快速缩小，模拟「按下」 */
+.demo-cursor.clicking {
+  transform: scale(0.78);
+}

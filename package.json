@@ -9,9 +9,10 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "verify": "npm run verify:prompts && npm run verify:window",
+    "verify": "npm run verify:prompts && npm run verify:window && npm run verify:threads",
     "verify:window": "esbuild scripts/verify-window-model.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/verify-window.mjs --log-level=warning && node node_modules/.tmp/verify-window.mjs",
-    "verify:prompts": "esbuild scripts/verify-prompts.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/verify-prompts.mjs --log-level=warning && node node_modules/.tmp/verify-prompts.mjs"
+    "verify:prompts": "esbuild scripts/verify-prompts.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/verify-prompts.mjs --log-level=warning && node node_modules/.tmp/verify-prompts.mjs",
+    "verify:threads": "esbuild scripts/verify-threads.ts --bundle --platform=node --format=esm --outfile=node_modules/.tmp/verify-threads.mjs --log-level=warning && node node_modules/.tmp/verify-threads.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

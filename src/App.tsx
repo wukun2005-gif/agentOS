@@ -9,6 +9,7 @@ import { MorningBrief } from './components/panels/MorningBrief'
 import { AppWindow } from './components/windows/AppWindow'
 import { Dock } from './components/dock/Dock'
 import { SystemTray } from './components/system-tray/SystemTray'
+import { OneClickDemo } from './components/demo/OneClickDemo'
 import { useOrbStore } from './store/useOrbStore'
 import type { AppId } from './store/useOrbStore'
 import './App.css'
@@ -55,6 +56,7 @@ function App() {
       {/* 顶部导航栏 — 品牌 + 系统托盘（常驻） */}
       <header className="top-bar">
         <div className="top-bar-brand">Nexus OS</div>
+        <OneClickDemo />
         <SystemTray />
       </header>
 
@@ -67,6 +69,7 @@ function App() {
               <button
                 key={item.key}
                 type="button"
+                data-app={item.app ?? 'core'}
                 className={`side-nav-item ${active ? 'active' : ''}`}
                 onClick={() => (item.app === null ? closeApp() : toggleApp(item.app))}
               >

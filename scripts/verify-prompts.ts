@@ -38,14 +38,20 @@ for (const group of PROMPT_LIBRARY) {
 
     const data = buildArtifacts(route)[0]?.data
     const ok = (() => {
-      switch (item.expect) {
+      const exp = item.expect
+      // 子分支为通用清单：断言产物类型 + 具体清单 id
+      if (typeof exp === 'string' && exp.startsWith('list:')) {
+        const id = exp.slice(5)
+        return data?.type === 'list' && data.result.id === id
+      }
+      switch (exp) {
         case 'prep':
           return data?.type === 'prep'
         case 'reply':
           return data?.type === 'email' && data.mode === 'reply'
         case 'dnd':
         case 'open':
-          return data?.type === 'setting' && data.result.setting === item.expect
+          return data?.type === 'setting' && data.result.setting === exp
         default:
           return true
       }

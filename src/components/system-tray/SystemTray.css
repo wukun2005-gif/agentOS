@@ -158,6 +158,30 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.notif-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notif-clear-all {
+  border: none;
+  background: transparent;
+  color: var(--on-surface-variant);
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.notif-clear-all:hover {
+  opacity: 1;
+  color: var(--primary-container);
+}
+
 .notif-close {
   display: flex;
   align-items: center;
@@ -183,6 +207,7 @@
 }
 
 .notif-item {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -230,6 +255,7 @@
 .notif-main {
   flex: 1;
   min-width: 0;
+  padding-right: 4px;
 }
 
 .notif-title {
@@ -252,6 +278,38 @@
   color: var(--on-surface-variant);
   opacity: 0.5;
   flex-shrink: 0;
+}
+
+/* 单条通知的清除按钮 — 悬停条目时浮现 */
+.notif-dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: -1px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.notif-item:hover .notif-dismiss {
+  opacity: 0.7;
+}
+
+.notif-dismiss:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--on-surface);
+}
+
+.notif-dismiss .material-symbols-outlined {
+  font-size: 14px;
 }
 
 @media (max-width: 900px) {

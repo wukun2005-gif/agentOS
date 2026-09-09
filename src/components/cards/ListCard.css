@@ -1,0 +1,107 @@
+/* 通用清单卡片（PRD v1.0 §4 具体子诉求） */
+
+.list-subtitle {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  margin: -4px 0 12px;
+  line-height: 1.4;
+}
+
+.list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid transparent;
+}
+
+.list-item.warn {
+  border-color: rgba(224, 160, 0, 0.4);
+  background: rgba(224, 160, 0, 0.08);
+}
+
+.list-item.danger {
+  border-color: rgba(229, 72, 77, 0.45);
+  background: rgba(229, 72, 77, 0.1);
+}
+
+.list-item.primary {
+  border-color: var(--primary-container);
+  background: color-mix(in srgb, var(--primary-container) 14%, transparent);
+}
+
+.list-item.muted {
+  opacity: 0.78;
+}
+
+.list-item-icon {
+  font-size: 18px;
+  color: var(--on-surface-variant);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.list-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-item-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.list-item-detail {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.list-item-tag {
+  flex-shrink: 0;
+  align-self: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--on-surface-variant);
+  white-space: nowrap;
+}
+
+.list-item-tag.warn {
+  background: rgba(224, 160, 0, 0.18);
+  color: #e0a000;
+}
+
+.list-item-tag.danger {
+  background: rgba(229, 72, 77, 0.18);
+  color: #e5484d;
+}
+
+.list-item-tag.primary {
+  background: color-mix(in srgb, var(--primary-container) 28%, transparent);
+  color: var(--on-primary-container);
+}
+
+.list-item-tag.muted {
+  background: var(--surface-3);
+  color: var(--on-surface-variant);
+}
+
+.list-done {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--primary);
+  line-height: 1.4;
+}

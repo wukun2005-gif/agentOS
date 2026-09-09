@@ -6,6 +6,7 @@ import { DocCard } from './DocCard'
 import { EmailCard } from './EmailCard'
 import { FocusCard } from './FocusCard'
 import { LegacyCard } from './LegacyCard'
+import { ListCard } from './ListCard'
 import { MeetingCard } from './MeetingCard'
 import { MeetingPrepCard } from './MeetingPrepCard'
 import { MessageCard } from './MessageCard'
@@ -20,7 +21,7 @@ import './IntentCard.css'
  * 卡片由 Agent 产出后停靠在槽位上，不随新任务跳位，只有关闭或退场才迁移。
  */
 
-const OFFICE_KINDS = new Set(['brief', 'email', 'meeting', 'message', 'doc', 'prep', 'setting'])
+const OFFICE_KINDS = new Set(['brief', 'email', 'meeting', 'message', 'doc', 'prep', 'setting', 'list'])
 
 function renderArtifact(artifact: Artifact, rawText: string) {
   const hasData = !!artifact.data
@@ -70,6 +71,8 @@ function renderArtifact(artifact: Artifact, rawText: string) {
       return <DocCard artifact={artifact} />
     case 'report':
       return <ReportCard artifact={artifact} />
+    case 'list':
+      return <ListCard artifact={artifact} />
     case 'focus':
       return <FocusCard artifact={artifact} />
     default:

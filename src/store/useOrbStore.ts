@@ -20,7 +20,14 @@ export type NotificationAction =
   | { kind: 'app'; app: AppId }
   | { kind: 'dismiss' }
 
-/** 一次意图运行形成一条「会话线程」（侧栏 Threads 视图） */
+/**
+ * 一次意图运行形成一条「工作线程」。
+ *
+ * 语义（用户定义）：Threads 只装载**进行中、未完成、可并行**的工作线程；
+ * 跑完即完结的一次性意图（晨报/邮件分诊/会议纪要…）不进 Threads，去 History 看。
+ * 只有性质上是「持续任务」的意图（如深度工作）才会 open:true 并常驻，
+ * 直到任务自然结束或用户手动关闭。
+ */
 export interface Thread {
   id: string
   kind: IntentKind | 'unknown'
@@ -28,6 +35,8 @@ export interface Thread {
   time: string
   status: 'running' | 'done'
   artifactCount: number
+  /** 是否进行中：true = 仍在 Threads 展示；false = 已完结，仅留在 History */
+  open: boolean
 }
 
 /**
@@ -101,6 +110,14 @@ interface OrbStore {
   notifications: Notification[]
   pushNotification: (n: Omit<Notification, 'id' | 'read' | 'time'> & { time?: string }) => void
   markAllNotificationsRead: () => void
+  /** 处理/清除单条通知（点击可操作通知或手动 × 时调用，避免重复触发） */
+  consumeNotification: (id: string) => void
+  /** 清空通知中心 */
+  clearNotifications: () => void
+
+  /** 命令栏草稿（一键演示用来"打字"到输入框，复用同一提交路径） */
+  commandDraft: string
+  setCommandDraft: (text: string) => void
 
   /** 今日累计节省时长（分钟）— PRD §1.4 效率提升可视化 */
   timeSaved: number
@@ -124,10 +141,12 @@ interface OrbStore {
   /** 同一 App 再次点击则关闭（toggle 语义，符合 Dock 行为） */
   toggleApp: (app: AppId) => void
 
-  /** 会话线程列表（每次意图运行一条，最新在前） */
+  /** 工作线程列表（每次意图运行一条，最新在前） */
   threads: Thread[]
   pushThread: (thread: Thread) => void
   updateThread: (id: string, patch: Partial<Thread>) => void
+  /** 用户手动结束一条进行中的线程（open → false，移出 Threads，留在 History） */
+  closeThread: (id: string) => void
 
   /** 重置演示：清空产物 / 线程 / 通知 / 节省时长，回到 Core */
   resetDemo: () => void
@@ -175,12 +194,25 @@ export const useOrbStore = create<OrbStore>((set) => ({
     })),
   markAllNotificationsRead: () =>
     set((s) => ({ notifications: s.notifications.map((n) => ({ ...n, read: true })) })),
+  consumeNotification: (id) =>
+    set((s) => ({ notifications: s.notifications.filter((n) => n.id !== id) })),
+  clearNotifications: () => set({ notifications: [] }),
+
+  commandDraft: '',
+  setCommandDraft: (commandDraft) => set({ commandDraft }),
 
   timeSaved: 0,
   addTimeSaved: (minutes) => set((s) => ({ timeSaved: s.timeSaved + minutes })),
 
   focusMode: false,
-  setFocusMode: (focusMode) => set({ focusMode }),
+  setFocusMode: (focusMode) =>
+    set((s) => {
+      // 退出专注时，自动关闭所有进行中的「深度工作」线程（移出 Threads，留在 History）
+      const threads = focusMode
+        ? s.threads
+        : s.threads.map((t) => (t.open && t.kind === 'focus' ? { ...t, open: false } : t))
+      return { focusMode, threads }
+    }),
 
   dndAll: false,
   setDndAll: (dndAll) => set({ dndAll }),
@@ -196,6 +228,10 @@ export const useOrbStore = create<OrbStore>((set) => ({
   updateThread: (id, patch) =>
     set((s) => ({
       threads: s.threads.map((t) => (t.id === id ? { ...t, ...patch } : t)),
+    })),
+  closeThread: (id) =>
+    set((s) => ({
+      threads: s.threads.map((t) => (t.id === id ? { ...t, open: false } : t)),
     })),
 
   resetDemo: () =>

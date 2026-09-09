@@ -1,6 +1,5 @@
 import { useOrbStore } from '../../store/useOrbStore'
 import type { AppId } from '../../store/useOrbStore'
-import { runIntentFlow } from '../../logic/intentFlow'
 import type { IntentKind } from '../orb/OrbState'
 import './AppWindow.css'
 
@@ -88,40 +87,49 @@ export function AppWindow() {
   )
 }
 
-/** —— 会话线程 —— */
+/** —— 进行中的工作线程 —— */
 function ThreadsPanel() {
   const threads = useOrbStore((s) => s.threads)
+  const closeThread = useOrbStore((s) => s.closeThread)
+  // 只展示进行中、未完结的线程；已完结的去 History 看
+  const open = threads.filter((t) => t.open)
 
-  if (threads.length === 0) {
+  if (open.length === 0) {
     return (
       <div className="panel-empty">
-        还没有运行过意图。在命令栏说一句话或点一个提示词，就会在这里生成一条线程。
+        当前没有进行中的工作线程。<br />
+        开始一次深度专注，或发起一个持续任务，它会挂在这里；<br />
+        一旦完结就自动移出，去 History 查看完整记录。
       </div>
     )
   }
 
   return (
     <ul className="thread-list">
-      {threads.map((t) => {
+      {open.map((t) => {
         const m = kindMeta(t.kind)
         return (
           <li key={t.id}>
-            <button
-              type="button"
-              className="thread-item"
-              onClick={() => runIntentFlow(t.query)}
-              title="重放此意图（会自动回到桌面）"
-            >
-              <span className="material-symbols-outlined thread-icon">{m.icon}</span>
+            <div className="thread-item">
+              <span className="material-symbols-outlined thread-icon live">{m.icon}</span>
               <span className="thread-body">
                 <span className="thread-query">{t.query}</span>
                 <span className="thread-meta">
                   <span className={`thread-tag tag-${t.kind}`}>{m.label}</span>
                   <span className="thread-time">{t.time}</span>
-                  <span className="thread-count">{t.artifactCount} 产物</span>
+                  <span className="thread-live">进行中</span>
                 </span>
               </span>
-            </button>
+              <button
+                type="button"
+                className="thread-end"
+                onClick={() => closeThread(t.id)}
+                title="结束此工作线程（移出 Threads，留在 History）"
+                aria-label="结束此工作线程"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
           </li>
         )
       })}

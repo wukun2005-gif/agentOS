@@ -99,15 +99,20 @@ export function runIntentFlow(rawText: string) {
   store.setAcknowledgment(route?.ack ?? '')
   store.setOrbState('listening')
 
-  // 记录一条会话线程（窗口 Threads）
+  // 记录一条工作线程（窗口 Threads）
   const threadId = `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+  const kind = route?.kind ?? 'unknown'
+  // 只有「持续任务」性质的意图（深度工作）才 open 常驻 Threads；
+  // 一次性意图跑完即完结，不进 Threads（去 History 看）。
+  const isOngoing = kind === 'focus'
   store.pushThread({
     id: threadId,
-    kind: route?.kind ?? 'unknown',
+    kind,
     query: rawText,
     time: nowHM(),
     status: 'running',
     artifactCount: 0,
+    open: isOngoing,
   })
 
   // 未命中 → 澄清态（P0 验收：意图不明可恢复，不陷入无限状态）
@@ -148,7 +153,11 @@ export function runIntentFlow(rawText: string) {
         if (nextState === 'executing') {
           const produced = buildArtifacts(route)
           s.setArtifacts(dockArtifacts(s.artifacts, produced))
-          s.updateThread(threadId, { status: 'done', artifactCount: produced.length })
+          // 一次性意图在此完结（open 已是 false，不进 Threads）；
+          // 深度工作线程保持 open，不在此标记 done。
+          if (route.kind !== 'focus') {
+            s.updateThread(threadId, { status: 'done', artifactCount: produced.length })
+          }
         }
 
         if (nextState === 'responding') {
@@ -157,7 +166,11 @@ export function runIntentFlow(rawText: string) {
           if (saved) s.addTimeSaved(saved)
           const note = SCENARIO_NOTIFICATION[route.kind]
           if (note) s.pushNotification({ ...note, tone: 'success' })
-          if (route.kind === 'focus') s.setFocusMode(true)
+          if (route.kind === 'focus') {
+            s.setFocusMode(true)
+            // 深度工作线程进入「进行中」状态，常驻 Threads 直到退出专注
+            s.updateThread(threadId, { status: 'running', open: true, artifactCount: 1 })
+          }
         }
       }, elapsed),
     )

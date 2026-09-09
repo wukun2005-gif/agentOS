@@ -183,6 +183,41 @@ export interface SettingResult {
   applied: boolean
 }
 
+/* ===== 通用清单产物（PRD v1.0 §4 具体子诉求） =====
+ *
+ * 由来：同一意图下不同文案承诺的是不同结果。
+ * 例：brief 的「今天有什么必须我拍板的」和「给我一份晨间简报」
+ * 都命中 brief，但用户期待的产物完全不同。
+ * 用一份通用清单契约承载这些"具体子诉求"，避免写十几个专用卡片。
+ */
+
+export type ListTone = 'primary' | 'warn' | 'muted' | 'danger'
+
+export interface ListItem {
+  id: string
+  icon: string
+  title: string
+  detail?: string
+  /** 右侧标签（如「3 天前」「建议跳过」「阻塞」） */
+  tag?: string
+  tone?: ListTone
+}
+
+export interface ListResult {
+  id: string
+  title: string
+  subtitle?: string
+  items: ListItem[]
+  savedMinutes?: number
+  /**
+   * external-action 标签（PRD §4.1 风险分级）：
+   * 有值则卡片进入待确认态，用户确认后才算执行。
+   */
+  confirmLabel?: string
+  /** 确认完成后的提示文案 */
+  doneLabel?: string
+}
+
 /* ===== 产物数据契约 ===== */
 
 export type ArtifactData =
@@ -210,6 +245,10 @@ export type ArtifactData =
   | {
       type: 'focus'
       session: FocusSession
+    }
+  | {
+      type: 'list'
+      result: ListResult
     }
 
 /* ===== 价值量化（PRD §1.4 效率提升可视化） ===== */

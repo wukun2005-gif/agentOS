@@ -106,7 +106,7 @@ export interface Intent {
 /** 任务产物 — ArtifactFactory 输出 */
 export type ArtifactZone = 'focus' | 'near' | 'far'
 export type ArtifactStatus = 'active' | 'complete' | 'waiting' | 'pinned'
-export type ArtifactKind = IntentKind | 'confirmation' | 'clarification' | 'error' | 'prep' | 'setting'
+export type ArtifactKind = IntentKind | 'confirmation' | 'clarification' | 'error' | 'prep' | 'setting' | 'list'
 export type ArtifactAction = 'confirm' | 'cancel' | 'edit' | 'expand' | 'pin' | 'dismiss'
 
 export interface Artifact {

@@ -1,5 +1,9 @@
 # Nexus OS — AI 存在范式 Demo
 
+<p align="center">
+  <img src="assets/demo.gif" alt="Nexus OS 一键演示 — 一句话，OS 替你办完一天" width="800">
+</p>
+
 一个"无 App 时代"的 AI 交互范式演示，面向**打工人办公场景**（PRD v1.0）。
 
 核心交互实体是一个能量光球（Energy Orb），通过 8 态状态机表达 AI 的存在感与理解过程；用户只说意图，系统自动跨邮件 / 会议 / IM / 文档执行，结果以产物卡片的形式在光球周围涌现。

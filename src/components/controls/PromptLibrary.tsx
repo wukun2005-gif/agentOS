@@ -6,12 +6,13 @@ import './PromptLibrary.css'
 /**
  * 提示词库（PRD v1.0 §4 全场景覆盖）
  *
- * 按意图场景分组的快捷入口：空态（无产物 + 无流转）时展示，
- * 用户点击任一 prompt 即派发对应意图，无需手敲 query。
+ * 按意图场景分组的快捷入口：「桌面空态」时展示——
+ * 没有窗口、没有产物、没有流转。用户点击任一 prompt 即派发对应意图。
  */
 export function PromptLibrary() {
   const orbState = useOrbStore((s) => s.orbState)
   const artifacts = useOrbStore((s) => s.artifacts)
+  const activeApp = useOrbStore((s) => s.activeApp)
 
   const isFlowing =
     orbState === 'listening' ||
@@ -20,8 +21,9 @@ export function PromptLibrary() {
     orbState === 'executing' ||
     orbState === 'responding'
 
-  // 仅在空态展示，避免与产物卡片、流转态抢视线
-  if (isFlowing || artifacts.length > 0) return null
+  // 仅在「桌面空态」展示。窗口打开时必须隐藏——窗口本身已提供上下文，
+  // 与提示词库并存会产生严重视觉重叠（设置项 vs prompt chips 互相挡字）。
+  if (isFlowing || artifacts.length > 0 || activeApp !== null) return null
 
   return (
     <div className="prompt-library" aria-label="场景提示词库">
@@ -34,7 +36,8 @@ export function PromptLibrary() {
           <div className="prompt-group" key={group.kind}>
             <div className="prompt-group-head">
               <span className="material-symbols-outlined prompt-group-icon">{group.icon}</span>
-              {group.title}
+              <span className="prompt-group-title">{group.title}</span>
+              <span className="prompt-group-friction">{group.friction}</span>
             </div>
             <div className="prompt-chips">
               {group.items.map((item) => (

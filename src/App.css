@@ -242,7 +242,16 @@ body {
   pointer-events: auto;
 }
 
-/* 画布底部栈 — 命令栏 + Dock 意图入口 */
+/* 窗口打开时：顶部信息条降级，避免与窗口视觉打架 */
+.canvas-top--behind {
+  opacity: 0.22;
+  filter: saturate(0.5);
+}
+
+/*
+ * 画布底部栈 — 命令栏 + Dock（OS shell 交互层，常驻）
+ * z-index 45：高于 App 窗口(30)，保证任何状态下用户都能直接与 OS 对话。
+ */
 .canvas-bottom {
   position: absolute;
   bottom: 20px;
@@ -252,7 +261,63 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  z-index: 22;
+  z-index: 45;
+}
+
+/* ===== 光球层 ===== */
+.orb-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.orb-layer .orb-container {
+  transition:
+    top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    bottom 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.4s ease;
+}
+
+/* 窗口打开时：光球缩小到左下角，成为「回到桌面」的入口 */
+.orb-layer--mini .orb-container {
+  top: auto;
+  bottom: 190px;
+  left: 56px;
+  transform: scale(0.24);
+  transform-origin: bottom left;
+  opacity: 0.85;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.orb-layer--mini .orb-container:hover {
+  opacity: 1;
+}
+
+/* ===== 产物卡片层 ===== */
+.cards-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  pointer-events: none;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.cards-layer > * {
+  pointer-events: auto;
+}
+
+/* 窗口打开时：卡片降级为「在窗口后面」，不再拦截交互 */
+.cards-layer--behind {
+  opacity: 0.22;
+  filter: saturate(0.5) blur(1px);
+}
+
+.cards-layer--behind > * {
+  pointer-events: none;
 }
 
 /* Accessibility — reduced motion */

@@ -11,7 +11,7 @@ import { CardButton, CardFrame } from './CardFrame'
  */
 export function SettingCard({ artifact }: { artifact: Artifact }) {
   const setDndAll = useOrbStore((s) => s.setDndAll)
-  const setView = useOrbStore((s) => s.setView)
+  const openApp = useOrbStore((s) => s.openApp)
   const pushNotification = useOrbStore((s) => s.pushNotification)
   const dismissArtifact = useOrbStore((s) => s.dismissArtifact)
   const updateArtifact = useOrbStore((s) => s.updateArtifact)
@@ -23,7 +23,7 @@ export function SettingCard({ artifact }: { artifact: Artifact }) {
     if (!data || data.type !== 'setting') return
     const result = data.result
     if (result.setting === 'open') {
-      setView('settings')
+      openApp('settings')
       const t = setTimeout(() => dismissArtifact(artifact.id), 300)
       return () => clearTimeout(t)
     }
@@ -67,7 +67,7 @@ export function SettingCard({ artifact }: { artifact: Artifact }) {
       onClose={() => dismissArtifact(artifact.id)}
       actions={
         <>
-          <CardButton variant="primary" onClick={() => setView('settings')}>
+          <CardButton variant="primary" onClick={() => openApp('settings')}>
             打开设置
           </CardButton>
           <CardButton onClick={() => dismissArtifact(artifact.id)}>关闭</CardButton>

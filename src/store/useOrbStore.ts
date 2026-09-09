@@ -14,10 +14,10 @@ export interface Notification {
   action?: NotificationAction
 }
 
-/** 通知点击动作：派发意图 / 切换侧栏视图 / 仅关闭 */
+/** 通知点击动作：派发意图 / 打开应用窗口 / 仅关闭 */
 export type NotificationAction =
   | { kind: 'intent'; text: string }
-  | { kind: 'view'; view: SideView }
+  | { kind: 'app'; app: AppId }
   | { kind: 'dismiss' }
 
 /** 一次意图运行形成一条「会话线程」（侧栏 Threads 视图） */
@@ -30,7 +30,14 @@ export interface Thread {
   artifactCount: number
 }
 
-export type SideView = 'core' | 'threads' | 'history' | 'settings'
+/**
+ * 系统内的「应用窗口」。
+ *
+ * 架构要点：桌面（Core）**不是一个窗口**，而是所有窗口都关闭时的状态
+ * （activeApp === null）。这是 OS 心智模型 —— App 浮在桌面之上，
+ * 而不是替换桌面：用户开着设置窗口时，依然能用命令栏与 OS 对话。
+ */
+export type AppId = 'threads' | 'history' | 'settings'
 
 const SEED_NOTIFICATIONS: Notification[] = [
   {
@@ -107,9 +114,15 @@ interface OrbStore {
   dndAll: boolean
   setDndAll: (on: boolean) => void
 
-  /** 侧栏当前视图（Core / Threads / History / Settings） */
-  view: SideView
-  setView: (view: SideView) => void
+  /**
+   * 当前打开的应用窗口（null = 回到桌面）。
+   * OS shell（顶栏 / 侧栏 / 命令栏 / Dock）始终常驻，不受此状态影响。
+   */
+  activeApp: AppId | null
+  openApp: (app: AppId) => void
+  closeApp: () => void
+  /** 同一 App 再次点击则关闭（toggle 语义，符合 Dock 行为） */
+  toggleApp: (app: AppId) => void
 
   /** 会话线程列表（每次意图运行一条，最新在前） */
   threads: Thread[]
@@ -172,8 +185,10 @@ export const useOrbStore = create<OrbStore>((set) => ({
   dndAll: false,
   setDndAll: (dndAll) => set({ dndAll }),
 
-  view: 'core',
-  setView: (view) => set({ view }),
+  activeApp: null,
+  openApp: (app) => set({ activeApp: app }),
+  closeApp: () => set({ activeApp: null }),
+  toggleApp: (app) => set((s) => ({ activeApp: s.activeApp === app ? null : app })),
 
   threads: [],
   pushThread: (thread) =>
@@ -191,7 +206,7 @@ export const useOrbStore = create<OrbStore>((set) => ({
       timeSaved: 0,
       focusMode: false,
       dndAll: false,
-      view: 'core',
+      activeApp: null,
       scenario: null,
       transcript: '',
       acknowledgment: '',

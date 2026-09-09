@@ -87,6 +87,10 @@ export function runIntentFlow(rawText: string) {
   const store = useOrbStore.getState()
   clearTimers()
 
+  // 运行新意图即回到桌面：让用户看到即将产出的卡片，
+  // 而不是让 App 窗口挡在前面（OS 心智 —— 新任务把焦点带回桌面）。
+  store.closeApp()
+
   const route = routeIntent(rawText)
 
   store.setIntentFlowActive(true)
@@ -95,7 +99,7 @@ export function runIntentFlow(rawText: string) {
   store.setAcknowledgment(route?.ack ?? '')
   store.setOrbState('listening')
 
-  // 记录一条会话线程（侧栏 Threads 视图）
+  // 记录一条会话线程（窗口 Threads）
   const threadId = `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
   store.pushThread({
     id: threadId,

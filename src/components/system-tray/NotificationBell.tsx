@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useOrbStore } from '../../store/useOrbStore'
+import type { NotificationAction } from '../../store/useOrbStore'
 import { runIntentFlow } from '../../logic/intentFlow'
 import './NotificationBell.css'
 
@@ -8,22 +9,22 @@ import './NotificationBell.css'
  *
  * 未读以琥珀色徽标提示；点击展开最近 12 条系统消息。
  * 每条通知可点击 — 携带 action 的通知会让 OS 直接采取对应行为
- * （派发意图 / 切换侧栏视图），实现「通知即入口」。
+ * （派发意图 / 打开应用窗口），实现「通知即入口」。
  */
 export function NotificationBell() {
   const notifications = useOrbStore((s) => s.notifications)
-  const setView = useOrbStore((s) => s.setView)
+  const openApp = useOrbStore((s) => s.openApp)
   const markAllRead = useOrbStore((s) => s.markAllNotificationsRead)
   const [open, setOpen] = useState(false)
 
   const unread = notifications.filter((n) => !n.read).length
 
-  const handleNotifClick = (action?: { kind: 'intent'; text: string } | { kind: 'view'; view: 'core' | 'threads' | 'history' | 'settings' } | { kind: 'dismiss' }) => {
+  const handleNotifClick = (action?: NotificationAction) => {
     if (action?.kind === 'intent') {
-      setView('core')
+      // runIntentFlow 会自动关闭当前窗口回到桌面，让用户看到新产物
       runIntentFlow(action.text)
-    } else if (action?.kind === 'view') {
-      setView(action.view)
+    } else if (action?.kind === 'app') {
+      openApp(action.app)
     }
     setOpen(false)
   }

@@ -2,7 +2,7 @@
 
 .prompt-library {
   width: min(960px, 92%);
-  max-height: 240px;
+  max-height: 300px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -53,16 +53,14 @@
 
 .prompt-group {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .prompt-group-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 6px;
-  flex-shrink: 0;
-  width: 84px;
   font-size: 13px;
   font-weight: 600;
   color: var(--on-surface-variant);
@@ -72,6 +70,21 @@
   font-size: 17px;
   color: var(--primary-container);
   opacity: 0.85;
+  align-self: center;
+}
+
+.prompt-group-title {
+  flex-shrink: 0;
+}
+
+/* PRD §2 三高依据：高频 / 高摩擦 / 高价值 */
+.prompt-group-friction {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .prompt-chips {

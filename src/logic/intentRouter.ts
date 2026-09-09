@@ -32,6 +32,9 @@ const RULES: RouteRule[] = [
       '晨报',
       '早报',
       '今天怎么样',
+      '必须我',
+      '今天的日程',
+      '可以不去',
     ],
   },
   {
@@ -47,7 +50,7 @@ const RULES: RouteRule[] = [
   {
     kind: 'message',
     risk: 'informational',
-    keywords: ['聊了什么', '消息', '频道', '群里', '沟通', '提到了我', '@', '飞书', 'slack', '团队'],
+    keywords: ['聊了什么', '消息', '频道', '群里', '沟通', '提到了我', '提到我', '@', '飞书', 'slack', '团队'],
   },
   {
     kind: 'doc',
@@ -57,7 +60,7 @@ const RULES: RouteRule[] = [
   {
     kind: 'report',
     risk: 'external-action',
-    keywords: ['周报', '本周汇报', '本周总结', '这周做了什么', '本周做了什么', '写周报', '周总结'],
+    keywords: ['周报', '本周汇报', '本周总结', '这周做了什么', '本周做了什么', '写周报', '周总结', '明天先干什么'],
   },
   {
     kind: 'settings',
